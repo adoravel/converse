@@ -4,11 +4,13 @@ import at.acpi.converse.Converse;
 import at.acpi.converse.ConversePlatform;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
+import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
 import net.minecraft.network.chat.Component;
+
 
 public class ConverseDisplayConfig {
 	static final ConfigClassHandler<ConverseDisplayConfig> HANDLER = ConfigClassHandler.createBuilder(ConverseDisplayConfig.class)
@@ -22,13 +24,13 @@ public class ConverseDisplayConfig {
 		return HANDLER.instance();
 	}
 
-	@SerialEntry(comment = "Toggle chat visibility with a keybind")
+	@SerialEntry
 	public boolean allowToggleHotkey = true;
 
-	@SerialEntry(comment = "Show a message when the chat visibility is toggled via hotkey")
+	@SerialEntry
 	public boolean notifyOnToggle = true;
 
-	@SerialEntry(comment = "Temporarily render the chat window while the chat screen is open, even if visibility is hidden")
+	@SerialEntry
 	public boolean showChatWhileTyping = true;
 
 	public static ConfigCategory category() {
@@ -36,16 +38,25 @@ public class ConverseDisplayConfig {
 				.name(Component.translatable("text.converse.config.display.title"))
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("text.converse.config.display.option.toggeable"))
+						.description(OptionDescription.createBuilder()
+								.text(Component.translatable("text.converse.config.display.option.toggeable.desc"))
+								.build())
 						.binding(true, () -> get().allowToggleHotkey, v -> get().allowToggleHotkey = v)
 						.controller(BooleanControllerBuilder::create)
 						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("text.converse.config.display.option.notify"))
-						.binding(true, () -> get().allowToggleHotkey, v -> get().allowToggleHotkey = v)
+						.description(OptionDescription.createBuilder()
+								.text(Component.translatable("text.converse.config.display.option.notify.desc"))
+								.build())
+						.binding(true, () -> get().notifyOnToggle, v -> get().notifyOnToggle = v)
 						.controller(BooleanControllerBuilder::create)
 						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("text.converse.config.display.option.typing"))
+						.description(OptionDescription.createBuilder()
+								.text(Component.translatable("text.converse.config.display.option.typing.desc"))
+								.build())
 						.binding(true, () -> get().showChatWhileTyping, v -> get().showChatWhileTyping = v)
 						.controller(BooleanControllerBuilder::create)
 						.build())
