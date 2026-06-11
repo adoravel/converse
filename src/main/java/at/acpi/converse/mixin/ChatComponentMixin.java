@@ -4,6 +4,7 @@ import at.acpi.converse.config.ConverseConfig;
 import at.acpi.converse.registry.hotkeys.ToggleChatHotkey;
 import net.minecraft.client.gui.components.ChatComponent;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
 //? >=26.1 {
@@ -13,13 +14,17 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 //?}
 
 @Mixin(ChatComponent.class)
-public class ChatComponentMixin {
+public abstract class ChatComponentMixin {
+	@Shadow
+	public abstract boolean isChatFocused();
+
 	//? <=1.21.11 {
 	@ModifyReturnValue(method = "isChatHidden", at = @At("RETURN"))
 	private boolean modifyChatVisibilityEnum(boolean original) {
 		if (!ConverseConfig.display().allowToggleHotkey || !ToggleChatHotkey.isChatHidden())
 			return original;
-		return true;
+
+		return !(ConverseConfig.display().showChatWhileTyping && isChatFocused());
 	}
 
 	//?} else {
@@ -31,9 +36,10 @@ public class ChatComponentMixin {
 			)
 	)
 	int converse$display$guardRendering(int original) {
-		if (!ConverseConfig.display().allowToggleHotkey || !ToggleChatHotkey.isChatHidden())
-			return original;
-		return 0;
+		boolean shouldHide = ConverseConfig.display().allowToggleHotkey && ToggleChatHotkey.isChatHidden()
+				&& !(ConverseConfig.display().showChatWhileTyping && isChatFocused());
+
+		return shouldHide ? 0 : original;
 	}
 	*///?}
 }

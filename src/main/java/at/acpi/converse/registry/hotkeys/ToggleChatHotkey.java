@@ -1,6 +1,6 @@
 package at.acpi.converse.registry.hotkeys;
 
-import at.acpi.converse.config.ConverseDisplayConfig;
+import at.acpi.converse.config.ConverseConfig;
 import at.acpi.converse.hotkey.Hotkey;
 import at.acpi.converse.hotkey.KeybindData;
 import at.acpi.converse.registry.ConverseHotkeys;
@@ -19,7 +19,7 @@ public final class ToggleChatHotkey {
 	}
 
 	private static void onToggle(Minecraft client, boolean disabled) {
-		if (client.player == null || !ConverseDisplayConfig.get().notifyOnToggle) return;
+		if (client.player == null || !ConverseConfig.display().notifyOnToggle) return;
 
 		String message = disabled ? "text.converse.toggle.invisible" : "text.converse.toggle.visible";
 		Component component = Component.translatable(message);
@@ -28,7 +28,7 @@ public final class ToggleChatHotkey {
 		client.player.displayClientMessage(component, true);
 		//?} else {
 		/*client.player.sendOverlayMessage(component);
-		*///?}
+		 *///?}
 	}
 
 	public static Hotkey get() {

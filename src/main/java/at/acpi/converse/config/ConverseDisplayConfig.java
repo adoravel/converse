@@ -28,6 +28,9 @@ public class ConverseDisplayConfig {
 	@SerialEntry(comment = "Show a message when the chat visibility is toggled via hotkey")
 	public boolean notifyOnToggle = true;
 
+	@SerialEntry(comment = "Temporarily render the chat window while the chat screen is open, even if visibility is hidden")
+	public boolean showChatWhileTyping = true;
+
 	public static ConfigCategory category() {
 		return ConfigCategory.createBuilder()
 				.name(Component.translatable("text.converse.config.display.title"))
@@ -39,6 +42,11 @@ public class ConverseDisplayConfig {
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("text.converse.config.display.option.notify"))
 						.binding(true, () -> get().allowToggleHotkey, v -> get().allowToggleHotkey = v)
+						.controller(BooleanControllerBuilder::create)
+						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Component.translatable("text.converse.config.display.option.typing"))
+						.binding(true, () -> get().showChatWhileTyping, v -> get().showChatWhileTyping = v)
 						.controller(BooleanControllerBuilder::create)
 						.build())
 				.build();
