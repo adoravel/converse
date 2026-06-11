@@ -1,7 +1,7 @@
 package at.acpi.converse.mixin;
 
 import at.acpi.converse.config.ConverseConfig;
-import at.acpi.converse.registry.ConverseHotkeys;
+import at.acpi.converse.registry.hotkeys.ToggleChatHotkey;
 import net.minecraft.client.gui.components.ChatComponent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,7 +17,7 @@ public class ChatComponentMixin {
 	//? <=1.21.11 {
 	@ModifyReturnValue(method = "isChatHidden", at = @At("RETURN"))
 	private boolean modifyChatVisibilityEnum(boolean original) {
-		if (!ConverseConfig.display().allowToggleHotkey || !ConverseHotkeys.getToggleChatHotkey().isActive())
+		if (!ConverseConfig.display().allowToggleHotkey || !ToggleChatHotkey.isChatHidden())
 			return original;
 		return true;
 	}
@@ -31,7 +31,7 @@ public class ChatComponentMixin {
 			)
 	)
 	int converse$display$guardRendering(int original) {
-		if (!ConverseConfig.display().allowToggleHotkey || !ConverseHotkeys.getToggleChatHotkey().isActive())
+		if (!ConverseConfig.display().allowToggleHotkey || !ToggleChatHotkey.isChatHidden())
 			return original;
 		return 0;
 	}

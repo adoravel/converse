@@ -2,6 +2,9 @@
   "text.converse.config.title": "Converse Settings",
   "text.converse.config.display.title": "Display",
   "text.converse.config.display.option.toggeable": "Enable Chat Toggle Hotkey",
+  "text.converse.config.display.option.notify": "Notify on Toggle",
   "key.category.converse.keymap": "Converse",
-  "key.converse.toggle_chat": "Toggle Chat Visibility"
+  "key.converse.toggle_chat": "Toggle Chat Visibility",
+  "text.converse.toggle.visible": "Chat is now visible",
+  "text.converse.toggle.invisible": "Chat is now invisible"
 }

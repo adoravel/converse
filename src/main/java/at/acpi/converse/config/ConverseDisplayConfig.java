@@ -25,11 +25,19 @@ public class ConverseDisplayConfig {
 	@SerialEntry(comment = "Toggle chat visibility with a keybind")
 	public boolean allowToggleHotkey = true;
 
+	@SerialEntry(comment = "Show a message when the chat visibility is toggled via hotkey")
+	public boolean notifyOnToggle = true;
+
 	public static ConfigCategory category() {
 		return ConfigCategory.createBuilder()
 				.name(Component.translatable("text.converse.config.display.title"))
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("text.converse.config.display.option.toggeable"))
+						.binding(true, () -> get().allowToggleHotkey, v -> get().allowToggleHotkey = v)
+						.controller(BooleanControllerBuilder::create)
+						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Component.translatable("text.converse.config.display.option.notify"))
 						.binding(true, () -> get().allowToggleHotkey, v -> get().allowToggleHotkey = v)
 						.controller(BooleanControllerBuilder::create)
 						.build())
