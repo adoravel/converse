@@ -1,13 +1,14 @@
 package at.acpi.converse.fabric;
 
 //? fabric {
+
 import at.acpi.converse.hotkey.Hotkey;
 import at.acpi.converse.hotkey.KeybindData;
-import at.acpi.converse.registry.ConverseHotkeys;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 
 public final class FabricHotkeyImpl implements Hotkey {
 	private final KeybindData data;
@@ -26,6 +27,7 @@ public final class FabricHotkeyImpl implements Hotkey {
 	@Override
 	public void toggle() {
 		this.active = !this.active;
+		this.data.callback().onUpdate(Minecraft.getInstance(), this.active);
 	}
 
 	@Override

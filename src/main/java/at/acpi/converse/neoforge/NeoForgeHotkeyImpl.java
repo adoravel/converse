@@ -6,6 +6,7 @@ import at.acpi.converse.hotkey.Hotkey;
 import at.acpi.converse.hotkey.KeybindData;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -42,6 +43,7 @@ public final class NeoForgeHotkeyImpl implements Hotkey {
 	@Override
 	public void toggle() {
 		this.active = !this.active;
+		this.data.callback().onUpdate(Minecraft.getInstance(), this.active);
 	}
 
 	@Override
