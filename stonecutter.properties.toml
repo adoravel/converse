@@ -1,0 +1,57 @@
+mod.id = "converse"
+mod.name = "converse"
+mod.group = "at.acpi"
+mod.version = "0.1.0"
+mod.description = "chatting :3"
+mod.authors = ["adoravel"]
+mod.contributors = []
+mod.inception_year = "2026"
+mod.license.name = "LGPL-3.0-only"
+mod.license.url = "https://spdx.org/licenses/LGPL-3.0-only.html"
+mod.license.dist = "repo"
+mod.sources_url = "https://github.com/adoravel/converse"
+mod.homepage_url = "https://github.com/adoravel/converse"
+mod.issues_url = "https://github.com/adoravel/converse/issues"
+mod.discord_url = ""
+
+loomx.loom_version = "1.17-SNAPSHOT"
+
+[[versions]]
+project = "26.1.2-neoforge"
+version = "26.1.2"
+buildscript = "build.fabric.gradle.kts"
+
+[[mod.pom.developers]]
+id = "adoravel"
+name = "adoravel"
+url = "https://github.com/adoravel"
+
+[fabric]
+deps.fabric-loader = "0.19.3"
+
+[fabric."1.21.11"]
+deps.minecraft = "1.21.11"
+deps.fabric-api = "0.140.0+1.21.11"
+deps.modmenu = "17.0.0"
+deps.yacl = "3.8.1+1.21.11-fabric"
+
+[fabric."26.1.2"]
+deps.minecraft = "26.1.2"
+deps.fabric-api = "0.151.0+26.1.2"
+deps.modmenu = "18.0.0-beta.1"
+deps.yacl = "3.9.4+26.1-fabric"
+publish.additionalVersions = ["26.1.1", "26.1"]
+
+[neoforge]
+
+[neoforge."1.21.11"]
+deps.minecraft = "1.21.11"
+deps.neoforge = "21.11.42"
+deps.yacl = "3.8.1+1.21.11-neoforge"
+deps.parchment = "1.21.11:2025.12.20"
+
+[neoforge."26.1.2"]
+deps.minecraft = "26.1.2"
+deps.neoforge = "26.1.2.75"
+deps.yacl = "3.9.4+26.1-neoforge"
+publish.additionalVersions = ["26.1.1", "26.1"]
