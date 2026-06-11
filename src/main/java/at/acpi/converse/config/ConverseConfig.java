@@ -27,6 +27,7 @@ public class ConverseConfig {
 		return YetAnotherConfigLib.createBuilder()
 				.title(Component.translatable("text.converse.config.title"))
 				.category(ConverseDisplayConfig.category())
+				.category(ConverseAppearanceConfig.category())
 				.save(ConverseConfig::save)
 				.build()
 				.generateScreen(parent);
