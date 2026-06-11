@@ -4,7 +4,9 @@ import at.acpi.converse.Converse;
 import at.acpi.converse.ConversePlatform;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
+import dev.isxander.yacl3.api.OptionGroup;
 import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
+import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
@@ -26,7 +28,19 @@ public class ConverseAppearanceConfig {
 	public boolean smartWidth = false;
 
 	@SerialEntry(comment = "Removes the chat message indicator icon")
-	public boolean removeMessageIndicator = false;
+	public boolean removeMessageIndicator = true;
+
+	@SerialEntry(comment = "Enable slide-in animation for new chat messages")
+	public boolean enableMessageAnimation = true;
+
+	@SerialEntry(comment = "Duration of the message slide animation in milliseconds")
+	public int messageAnimationDuration = 500;
+
+	@SerialEntry(comment = "Enable slide-in animation for the chat input field")
+	public boolean enableTextFieldAnimation = true;
+
+	@SerialEntry(comment = "Duration of the text field slide animation in milliseconds")
+	public int textFieldAnimationDuration = 300;
 
 	public static ConfigCategory category() {
 		return ConfigCategory.createBuilder()
@@ -38,8 +52,31 @@ public class ConverseAppearanceConfig {
 						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("text.converse.config.appearance.option.removeMessageIndicator"))
-						.binding(false, () -> get().removeMessageIndicator, v -> get().removeMessageIndicator = v)
+						.binding(true, () -> get().removeMessageIndicator, v -> get().removeMessageIndicator = v)
 						.controller(BooleanControllerBuilder::create)
+						.build())
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("text.converse.config.appearance.group.animations"))
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("text.converse.config.appearance.option.enableMessageAnimation"))
+								.binding(true, () -> get().enableMessageAnimation, v -> get().enableMessageAnimation = v)
+								.controller(BooleanControllerBuilder::create)
+								.build())
+						.option(Option.<Integer>createBuilder()
+								.name(Component.translatable("text.converse.config.appearance.option.messageDuration"))
+								.binding(500, () -> get().messageAnimationDuration, v -> get().messageAnimationDuration = v)
+								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(100, 2000).step(50))
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("text.converse.config.appearance.option.enableTextFieldAnimation"))
+								.binding(true, () -> get().enableTextFieldAnimation, v -> get().enableTextFieldAnimation = v)
+								.controller(BooleanControllerBuilder::create)
+								.build())
+						.option(Option.<Integer>createBuilder()
+								.name(Component.translatable("text.converse.config.appearance.option.textFieldDuration"))
+								.binding(300, () -> get().textFieldAnimationDuration, v -> get().textFieldAnimationDuration = v)
+								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(100, 1000).step(50))
+								.build())
 						.build())
 				.build();
 	}

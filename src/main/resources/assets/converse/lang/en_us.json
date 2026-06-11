@@ -10,5 +10,10 @@
   "text.converse.toggle.visible": "Chat is now visible",
   "text.converse.toggle.invisible": "Chat is now invisible",
   "text.converse.config.appearance.title": "Appearance",
-  "text.converse.config.appearance.option.smartWidth": "Smart Width"
+  "text.converse.config.appearance.option.smartWidth": "Smart Width",
+  "text.converse.config.appearance.group.animations": "Chat Animations",
+  "text.converse.config.appearance.option.enableMessageAnimation": "Enable Message Animation",
+  "text.converse.config.appearance.option.messageDuration": "Message Animation Duration (ms)",
+  "text.converse.config.appearance.option.enableTextFieldAnimation": "Enable Text Field Animation",
+  "text.converse.config.appearance.option.textFieldDuration": "Text Field Animation Duration (ms)"
 }
