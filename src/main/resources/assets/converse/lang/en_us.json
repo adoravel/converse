@@ -10,7 +10,7 @@
   "key.category.converse.keymap": "Converse",
   "key.converse.toggle_chat": "Toggle Chat Visibility",
   "text.converse.toggle.visible": "Chat is now visible",
-  "text.converse.toggle.invisible": "Chat is now invisible",
+  "text.converse.toggle.invisible": "Chat is now hidden",
   "text.converse.config.appearance.title": "Appearance",
   "text.converse.config.appearance.option.smartWidth": "Smart Width",
   "text.converse.config.appearance.option.smartWidth.desc": "Automatically tweak chat background width accordingly to each line's content",
