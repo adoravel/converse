@@ -25,12 +25,20 @@ public class ConverseAppearanceConfig {
 	@SerialEntry(comment = "Automatically tweak chat background width accordingly to each line's content")
 	public boolean smartWidth = false;
 
+	@SerialEntry(comment = "Removes the chat message indicator icon")
+	public boolean removeMessageIndicator = false;
+
 	public static ConfigCategory category() {
 		return ConfigCategory.createBuilder()
 				.name(Component.translatable("text.converse.config.appearance.title"))
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("text.converse.config.appearance.option.smartWidth"))
 						.binding(false, () -> get().smartWidth, v -> get().smartWidth = v)
+						.controller(BooleanControllerBuilder::create)
+						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Component.translatable("text.converse.config.appearance.option.removeMessageIndicator"))
+						.binding(false, () -> get().removeMessageIndicator, v -> get().removeMessageIndicator = v)
 						.controller(BooleanControllerBuilder::create)
 						.build())
 				.build();

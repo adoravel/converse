@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.Mixin;
 
 //? <=1.21.11 {
 import net.minecraft.client.GuiMessage;
- //?} else {
+//?} else {
 /*import net.minecraft.client.multiplayer.chat.GuiMessage;
 *///?}
 
@@ -49,11 +49,6 @@ public class ChatComponentMixin {
 
 		int textWidth = font.width(line.content());
 		int dynamicRight = textWidth + 4;
-
-		if (line.tag() != null && line.tag().icon() != null) {
-			int iconWidth = line.tag().icon().width;
-			dynamicRight = line.getTagIconLeft(font) + iconWidth + 2;
-		}
 
 		right = Math.min(dynamicRight, right);
 		original.call(instance, left, top, right, bottom, color);

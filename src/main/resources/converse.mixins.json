@@ -7,8 +7,9 @@
     "defaultRequire": 1
   },
   "client": [
-    "smartChatBackground.ChatComponentMixin",
-    "chatVisibility.ChatComponentMixin"
+    "chatVisibility.ChatComponentMixin",
+    "removeMessageIndicator.GuiMessageLineMixin",
+    "smartChatBackground.ChatComponentMixin"
   ],
   "mixinextras": {
     "minVersion": "0.5.0"
