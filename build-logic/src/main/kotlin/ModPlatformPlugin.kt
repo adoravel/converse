@@ -19,6 +19,7 @@ fun Project.configureStonecutterReplacements() = stonecutter.apply {
 		replace("registerKeyBinding", "registerKeyMapping")
 		replace("net.fabricmc.fabric.api.client.keybinding.v1", "net.fabricmc.fabric.api.client.keymapping.v1")
 		replace("FabricDataOutput", "FabricPackOutput")
+		replace("GuiGraphics", "GuiGraphicsExtractor")
 	}
 }
 

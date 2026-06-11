@@ -9,9 +9,9 @@ import org.spongepowered.asm.mixin.injection.At;
 
 //? >=26.1 {
 /*import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
- *///?} else {
+*///?} else {
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-//?}
+ //?}
 
 @Mixin(ChatComponent.class)
 public abstract class ChatComponentMixin {
@@ -25,9 +25,7 @@ public abstract class ChatComponentMixin {
 			return original;
 
 		return !(ConverseConfig.display().showChatWhileTyping && isChatFocused());
-	}
-
-	//?} else {
+	} //?} else {
 	/*@ModifyExpressionValue(
 			method = "extractRenderState(Lnet/minecraft/client/gui/components/ChatComponent$ChatGraphicsAccess;IILnet/minecraft/client/gui/components/ChatComponent$DisplayMode;)V",
 			at = @At(

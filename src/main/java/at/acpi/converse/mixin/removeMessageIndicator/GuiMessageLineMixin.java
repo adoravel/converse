@@ -18,7 +18,7 @@ import net.minecraft.client.multiplayer.chat.GuiMessageTag;
 @Mixin(GuiMessage.Line.class)
 public class GuiMessageLineMixin {
 	@Inject(method = "tag", at = @At("HEAD"), cancellable = true)
-	private void toggleIndicator(CallbackInfoReturnable<GuiMessageTag> cir) {
+	private void converse$appearance$removeMessageIndicator(CallbackInfoReturnable<GuiMessageTag> cir) {
 		if (ConverseConfig.appearance().removeMessageIndicator) {
 			cir.setReturnValue(null);
 		}

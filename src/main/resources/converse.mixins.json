@@ -7,6 +7,10 @@
     "defaultRequire": 1
   },
   "client": [
+    "chatAnimation.ChatComponentAnimationStateProviderMixin",
+    "chatAnimation.ChatComponentRenderMixin",
+    "chatAnimation.ChatScreenAnimationStateProviderMixin",
+    "chatAnimation.ChatScreenRenderMixin",
     "chatVisibility.ChatComponentMixin",
     "removeMessageIndicator.GuiMessageLineMixin",
     "smartChatBackground.ChatComponentMixin"

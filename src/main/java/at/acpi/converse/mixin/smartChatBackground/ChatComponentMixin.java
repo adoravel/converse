@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.Mixin;
 
 //? <=1.21.11 {
 import net.minecraft.client.GuiMessage;
-//?} else {
+ //?} else {
 /*import net.minecraft.client.multiplayer.chat.GuiMessage;
 *///?}
 
@@ -33,8 +33,7 @@ public class ChatComponentMixin {
 					value = "INVOKE",
 					target = "Lnet/minecraft/client/gui/components/ChatComponent$ChatGraphicsAccess;fill(IIIII)V"
 			)
-	)
-			*///?}
+	) *///?}
 	private static void converse$appearance$adjustBackgroundWidth(
 			ChatComponent.ChatGraphicsAccess instance,
 			int left, int top, int right, int bottom, int color, Operation<Void> original,
