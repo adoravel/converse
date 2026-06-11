@@ -1,4 +1,4 @@
-package at.acpi.converse.mixin;
+package at.acpi.converse.mixin.chatVisibility;
 
 import at.acpi.converse.config.ConverseConfig;
 import at.acpi.converse.registry.hotkeys.ToggleChatHotkey;
@@ -20,7 +20,7 @@ public abstract class ChatComponentMixin {
 
 	//? <=1.21.11 {
 	@ModifyReturnValue(method = "isChatHidden", at = @At("RETURN"))
-	private boolean modifyChatVisibilityEnum(boolean original) {
+	private boolean converse$display$guardRendering(boolean original) {
 		if (!ConverseConfig.display().allowToggleHotkey || !ToggleChatHotkey.isChatHidden())
 			return original;
 
