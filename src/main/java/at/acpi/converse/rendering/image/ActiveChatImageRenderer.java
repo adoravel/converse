@@ -1,15 +1,19 @@
 package at.acpi.converse.rendering.image;
 
+import at.acpi.converse.config.ConverseConfig;
 import at.acpi.converse.rendering.image.domain.ActiveChatImage;
-import net.minecraft.client.gui.GuiGraphics;
 import at.acpi.converse.rendering.image.domain.ChatImageRenderingState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.ChatComponent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 
 public final class ActiveChatImageRenderer {
 	private ActiveChatImageRenderer() {
 	}
 
-	public static void render(GuiGraphics graphics, ActiveChatImage image, int x, int y) {
+	public static void render(GuiGraphics graphics, ActiveChatImage image, int x, int y, int maxWidth, int maxHeight) {
 		if (image.getState() != ChatImageRenderingState.LOADED) return;
 
 		Identifier textureId = image.getData().resourceIdentifier();
@@ -17,71 +21,31 @@ public final class ActiveChatImageRenderer {
 
 		image.touch();
 
-		int width = image.getData().width();
-		int height = image.getData().height();
+		int imageWidth = image.getData().width();
+		int imageHeight = image.getData().height();
 
-		//? <=1.21.11 {
-		graphics.blit(
-				textureId,
-				x, y, 0, 0,
-				width, height,
-				width, height
-		);
-		//?} else {
-        /*graphics.blit(
-				net.minecraft.client.renderer.RenderPipelines.GUI,
-                textureId,
-                x, y,
-                width, height,
-                0, 0,
-                width, height,
-                width, height
-        );
-        *///?}
+		float widthRatio = (maxWidth > 0) ? (float) imageWidth / maxWidth : 1.0f;
+		float heightRatio = (maxHeight > 0) ? (float) imageWidth / maxHeight : 1.0f;
+		float dominantRatio = Math.max(widthRatio, heightRatio);
+
+		int width = Math.max(1, (int) (imageWidth / dominantRatio));
+		int height = Math.max(1, (int) (imageHeight / dominantRatio));
+
+		graphics.blit(RenderPipelines.GUI_TEXTURED, textureId, x, y, 0, 0, width, height, width, height);
 	}
 
-	public static void renderTooltip(
-			//? <=1.21.11 {
-			GuiGraphics graphics,
-			//?} else {
-			/*GuiGraphics graphics,
-			 *///?}
-			ActiveChatImage image, int x, int y, int maxTooltipWidth
-	) {
-		if (image.getState() != ChatImageRenderingState.LOADED) return;
+	public static void renderInChat(GuiGraphics graphics, ActiveChatImage image, int x, int y) {
+		int maxWidth = ConverseConfig.image().maxWidth;
+		int maxHeight = ConverseConfig.image().maxHeight;
 
-		Identifier textureId = image.getData().resourceIdentifier();
-		if (textureId == null) return;
+		Minecraft mc = Minecraft.getInstance();
+		ChatComponent chat = mc.gui.getChat();
+		Double unfocusedHeight = mc.options.chatHeightUnfocused().get();
 
-		int textureW = image.getData().width();
-		int textureH = image.getData().height();
+		double chatScale = chat.getScale();
+		int maxChatWidth = (int) ((float) chat.getWidth() / chatScale) - 8;
+		int maxChatHeight = (int) ((float) ChatComponent.getHeight(unfocusedHeight) / chatScale) - 8;
 
-		int renderW = textureW;
-		int renderH = textureH;
-
-		if (textureW > maxTooltipWidth) {
-			float scale = (float) maxTooltipWidth / textureW;
-			renderW = maxTooltipWidth;
-			renderH = Math.max(1, (int) (textureH * scale));
-		}
-
-		//? <=1.21.11 {
-		graphics.blit(
-				textureId,
-				x, y, 0, 0,
-				renderW, renderH,
-				textureW, textureH
-		);
-		//?} else {
-        /*graphics.blit(
-				net.minecraft.client.renderer.RenderPipelines.GUI,
-                textureId,
-                x, y,
-                renderW, renderH,
-                0, 0,
-                textureW, textureH,
-                textureW, textureH
-        );
-        *///?}
+		render(graphics, image, x, y, Math.min(maxChatWidth, maxWidth), Math.min(maxChatHeight, maxHeight));
 	}
 }

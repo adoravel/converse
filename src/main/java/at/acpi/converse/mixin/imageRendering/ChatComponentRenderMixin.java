@@ -11,7 +11,6 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.GuiMessage;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.util.FormattedCharSequence;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,34 +22,30 @@ import java.util.Optional;
 
 @Mixin(targets = "net.minecraft.client.gui.components.ChatComponent$1")
 public class ChatComponentRenderMixin {
+	@Unique
+	private static void converse$image$renderImage(
+			ChatComponent.ChatGraphicsAccess graphicsAccess, ActiveChatImage image, int x, int y
+	) {
+		if (graphicsAccess instanceof ChatComponent.DrawingFocusedGraphicsAccess access) {
+			ActiveChatImageRenderer.renderInChat(access.graphics, image, x, y);
+		} else if (graphicsAccess instanceof ChatComponent.DrawingBackgroundGraphicsAccess access) {
+			ActiveChatImageRenderer.renderInChat(access.graphics, image, x, y);
+		}
+	}
+
 	//? <=1.21.11 {
 	@WrapOperation(
-			//? fabric {
 			method = "accept",
-			//?} else neoforge {
-			/*method = "lambda$render$1",
-			*///?}
 			at = @At(
 					value = "INVOKE",
 					target = "Lnet/minecraft/client/gui/components/ChatComponent$ChatGraphicsAccess;handleMessage(IFLnet/minecraft/util/FormattedCharSequence;)Z"
 			)
 	)
-			//?} else {
-    /*@WrapOperation(
-            method = "extractRenderState",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/client/gui/components/ChatComponent$ChatGraphicsAccess;handleMessage(IFLnet/minecraft/util/FormattedCharSequence;)Z"
-            )
-    )
-    *///?}
-	private boolean converse$image$injectImageLine(
+	private boolean converse$image$renderImageAtPivot(
 			ChatComponent.ChatGraphicsAccess access,
-			int y,
-			float alpha,
-			FormattedCharSequence content,
+			int y, float alpha, FormattedCharSequence content,
 			Operation<Boolean> original,
-            @Local(argsOnly = true) GuiMessage.Line line
+			@Local(argsOnly = true) GuiMessage.Line line
 	) {
 		var config = ConverseConfig.image();
 		if (!config.enableImages)
@@ -73,39 +68,15 @@ public class ChatComponentRenderMixin {
 			return original.call(access, y, alpha, content);
 		}
 
-		ActiveChatImage image = maybeImage.get();
-		if (!config.replaceUrlWithImage || image.getState() != ChatImageRenderingState.LOADED) {
-			boolean hovered = original.call(access, y, alpha, content);
-
-			if (image.getState() == ChatImageRenderingState.LOADED) {
-				int imageY = y + Minecraft.getInstance().font.lineHeight + 2;
-				renderImage(access, image, imageY);
-			}
-			return hovered;
+		var image = maybeImage.get();
+		if (config.replaceUrlWithImage && image.getState() == ChatImageRenderingState.LOADED) {
+			int imageY = y + 9 + 2;
+			converse$image$renderImage(access, image, 0, imageY);
 		}
 
-		renderImage(access, image, y);
-		return false;
+		return original.call(access, y, alpha, content);
 	}
+	//?} else {
 
-	@Unique
-	private static void renderImage(
-			ChatComponent.ChatGraphicsAccess access,
-			ActiveChatImage image,
-			int y
-	) {
-		//? <=1.21.11 {
-		if (access instanceof ChatComponent.DrawingFocusedGraphicsAccess focused) {
-			ActiveChatImageRenderer.render(focused.graphics, image, 0, y);
-		} else if (access instanceof ChatComponent.DrawingBackgroundGraphicsAccess background) {
-			ActiveChatImageRenderer.render(background.graphics, image, 0, y);
-		}
-		//?} else {
-        /*if (access instanceof ChatComponent.DrawingFocusedGraphicsAccess focused) {
-            ActiveChatImageRenderer.render(focused.graphics, image, 0, y);
-        } else if (access instanceof ChatComponent.DrawingBackgroundGraphicsAccess background) {
-            ActiveChatImageRenderer.render(background.graphics, image, 0, y);
-        }
-        *///?}
-	}
+	//?}
 }
