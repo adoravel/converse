@@ -18,7 +18,7 @@ platform {
 			slug(modrinth = "fabric-api")
 		}
 		required("fabricloader") {
-			requires atLeast configured("fabric-loader")
+			requires atLeast "0.18.5"
 		}
 		required("yet_another_config_lib_v3") {
 			slug("yacl") atLeast "3.8"
