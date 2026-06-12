@@ -1,11 +1,11 @@
 package at.acpi.converse.rendering.image;
 
 
+import at.acpi.converse.Converse;
 import at.acpi.converse.rendering.image.domain.ActiveChatImage;
 import at.acpi.converse.rendering.image.domain.ChatImageData;
 import at.acpi.converse.rendering.image.domain.ChatImageRenderingState;
 import at.acpi.converse.rendering.image.hosting.ImageHostingRegistry;
-import at.acpi.converse.rendering.image.hosting.ImageHostingService;
 import at.acpi.converse.rendering.image.network.ImageFetchResult;
 import at.acpi.converse.rendering.image.network.RemoteImageFetcher;
 import at.acpi.converse.rendering.image.pipeline.ImageProcessingResult;
@@ -38,20 +38,28 @@ public final class ImageLoadingOrchestrator {
 		return this.hostingRegistry;
 	}
 
-	public Optional<ActiveChatImage> requestImage(ImageHostingService service, URI uri) {
-		ImageProcessingResult result = service.compile(uri);
-		if (result instanceof ImageProcessingResult.Success(ChatImageData data)) {
-			ActiveChatImage image = cachePool.getOrCreate(uri.toString(), data);
-			ChatImageRenderingState state = image.getState();
+	public Optional<ActiveChatImage> requestCachedImage(URI uri) {
+		return cachePool.lookup(uri.toString());
+	}
 
-			if (state != ChatImageRenderingState.PENDING) {
-				image.touch();
-			} else if (image.compareAndSetState(ChatImageRenderingState.PENDING, ChatImageRenderingState.LOADING)) {
-				fetchBytesAsync(image);
-			}
-			return Optional.of(image);
-		}
-		return Optional.empty();
+	public Optional<ActiveChatImage> requestImage(URI uri) {
+		Optional<ActiveChatImage> maybeImage = requestCachedImage(uri);
+		if (maybeImage.isPresent()) return maybeImage;
+
+		return Converse.imageLoadingOrchestrator()
+				.hostingRegistry()
+				.findServiceFor(uri)
+				.flatMap(service ->
+						service.compile(uri) instanceof ImageProcessingResult.Success(ChatImageData data)
+								? Optional.of(cachePool.getOrCreate(uri.toString(), data))
+								: Optional.empty())
+				.map(image -> {
+					if (image.getState() != ChatImageRenderingState.PENDING)
+						image.touch();
+					else if (image.compareAndSetState(ChatImageRenderingState.PENDING, ChatImageRenderingState.LOADING))
+						fetchBytesAsync(image);
+					return image;
+				});
 	}
 
 	private void fetchBytesAsync(ActiveChatImage image) {
