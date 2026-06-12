@@ -6,7 +6,6 @@ import at.acpi.converse.rendering.image.ActiveChatImageRenderer;
 import at.acpi.converse.rendering.image.domain.ActiveChatImage;
 import at.acpi.converse.rendering.image.domain.ChatImageRenderingState;
 import at.acpi.converse.rendering.image.domain.ImageAttributeHolder;
-import at.acpi.converse.rendering.image.hosting.ImageHostingService;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -24,12 +23,12 @@ import java.util.Optional;
 public class ChatComponentRenderMixin {
 	@Unique
 	private static void converse$image$renderImage(
-			ChatComponent.ChatGraphicsAccess graphicsAccess, ActiveChatImage image, int x, int y
+			ChatComponent.ChatGraphicsAccess graphicsAccess, ActiveChatImage image, int y, float alpha
 	) {
 		if (graphicsAccess instanceof ChatComponent.DrawingFocusedGraphicsAccess access) {
-			ActiveChatImageRenderer.renderInChat(access.graphics, image, x, y);
+			ActiveChatImageRenderer.renderInChat(access.graphics, image, 0, y, alpha);
 		} else if (graphicsAccess instanceof ChatComponent.DrawingBackgroundGraphicsAccess access) {
-			ActiveChatImageRenderer.renderInChat(access.graphics, image, x, y);
+			ActiveChatImageRenderer.renderInChat(access.graphics, image, 0, y, alpha);
 		}
 	}
 
@@ -45,36 +44,29 @@ public class ChatComponentRenderMixin {
 			ChatComponent.ChatGraphicsAccess access,
 			int y, float alpha, FormattedCharSequence content,
 			Operation<Boolean> original,
+			@SuppressWarnings("UnresolvedLocalCapture")
 			@Local(argsOnly = true) GuiMessage.Line line
 	) {
+		boolean hovered = original.call(access, y, alpha, content);
+
 		var config = ConverseConfig.image();
-		if (!config.enableImages)
+		if (!config.enableImages || !config.replaceUrlWithImage)
 			return original.call(access, y, alpha, content);
 
 		URI uri = ((ImageAttributeHolder) (Object) line).converse$getImageUri();
 		if (uri == null)
 			return original.call(access, y, alpha, content);
 
-		Optional<ImageHostingService> service = Converse.imageLoadingOrchestrator()
-				.hostingRegistry()
-				.findServiceFor(uri);
-
-		if (service.isEmpty())
-			return original.call(access, y, alpha, content);
-
 		Optional<ActiveChatImage> maybeImage = Converse.imageLoadingOrchestrator()
-				.requestImage(service.get(), uri);
-		if (maybeImage.isEmpty()) {
-			return original.call(access, y, alpha, content);
-		}
+				.requestCachedImage(uri);
+		if (maybeImage.isEmpty())
+			return hovered;
 
 		var image = maybeImage.get();
-		if (config.replaceUrlWithImage && image.getState() == ChatImageRenderingState.LOADED) {
-			int imageY = y + 9 + 2;
-			converse$image$renderImage(access, image, 0, imageY);
-		}
+		if (image.getState() == ChatImageRenderingState.LOADED)
+			converse$image$renderImage(access, image, y, alpha);
 
-		return original.call(access, y, alpha, content);
+		return hovered;
 	}
 	//?} else {
 
