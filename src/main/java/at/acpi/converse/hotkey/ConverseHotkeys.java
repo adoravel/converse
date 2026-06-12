@@ -1,9 +1,8 @@
-package at.acpi.converse.registry;
+package at.acpi.converse.hotkey;
 
 import at.acpi.converse.Converse;
 import at.acpi.converse.config.ConverseConfig;
-import at.acpi.converse.hotkey.Hotkey;
-import at.acpi.converse.registry.hotkeys.ToggleChatHotkey;
+import at.acpi.converse.hotkey.hotkeys.ToggleChatHotkey;
 import net.minecraft.client.KeyMapping;
 
 public class ConverseHotkeys {

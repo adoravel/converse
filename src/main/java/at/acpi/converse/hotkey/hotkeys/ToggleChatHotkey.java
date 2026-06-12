@@ -1,9 +1,9 @@
-package at.acpi.converse.registry.hotkeys;
+package at.acpi.converse.hotkey.hotkeys;
 
 import at.acpi.converse.config.ConverseConfig;
 import at.acpi.converse.hotkey.Hotkey;
 import at.acpi.converse.hotkey.KeybindData;
-import at.acpi.converse.registry.ConverseHotkeys;
+import at.acpi.converse.hotkey.ConverseHotkeys;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
