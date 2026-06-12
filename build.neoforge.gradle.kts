@@ -32,6 +32,10 @@ neoForge {
 			ideName = "NeoForge Server (${stonecutter.current.version})"
 		}
 	}
+	validateAccessTransformers = true
+	accessTransformers.from(
+		rootProject.file("src/main/resources/accessWideners/${stonecutter.current.version}.cfg")
+	)
 }
 
 repositories {

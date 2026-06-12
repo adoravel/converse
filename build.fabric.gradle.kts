@@ -3,7 +3,7 @@ plugins {
 }
 
 val keyApi =
-	if(stonecutter.current.parsed >= "26.1") "fabric-key-mapping-api-v1" else "fabric-key-binding-api-v1"
+	if (stonecutter.current.parsed >= "26.1") "fabric-key-mapping-api-v1" else "fabric-key-binding-api-v1"
 
 platform {
 	loader = "fabric"
@@ -36,6 +36,8 @@ loom {
 		server()
 		generateRunConfig.set(true)
 	}
+	accessWidenerPath =
+		rootProject.file("src/main/resources/accessWideners/${stonecutter.current.version}.classtweaker")
 }
 
 repositories {

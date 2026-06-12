@@ -20,6 +20,11 @@ fun Project.configureStonecutterReplacements() = stonecutter.apply {
 		replace("net.fabricmc.fabric.api.client.keybinding.v1", "net.fabricmc.fabric.api.client.keymapping.v1")
 		replace("FabricDataOutput", "FabricPackOutput")
 		replace("GuiGraphics", "GuiGraphicsExtractor")
+		replace("net.minecraft.client.GuiMessage", "net.minecraft.client.multiplayer.chat.GuiMessage")
+		replace("net.minecraft.client.GuiMessageTag", "net.minecraft.client.multiplayer.chat.GuiMessageTag")
+	}
+	replacements.string(current.parsed <= "1.21.11") {
+		replace("GuiGraphicsExtractor", "GuiGraphics")
 	}
 }
 

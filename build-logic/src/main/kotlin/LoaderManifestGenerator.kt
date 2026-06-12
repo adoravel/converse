@@ -53,6 +53,7 @@ data class FabricManifestGenerator(val remapped: Boolean = false) : LoaderManife
 			version = ctx.baseVersion,
 			authors = ctx.authors,
 			license = ctx.licenseName,
+			accessWidener = "accessWideners/${ctx.currentMinecraftVersion}.classtweaker",
 			contributors = ctx.contributors,
 			contact = mapOf(
 				"sources" to ctx.sourcesUrl,
@@ -88,7 +89,7 @@ data object NeoForgeManifestGenerator : LoaderManifestGenerator<NeoForgeManifest
 	override val modManifestPath = "META-INF/neoforge.mods.toml"
 
 	override val excludedResources = listOf(
-		"fabric.mod.json", "aw/*.accesswidener", ".cache", "pack.mcmeta"
+		"fabric.mod.json", "accessWideners/*.classtweaker", ".cache", "pack.mcmeta"
 	)
 
 	override fun generateManifest(ctx: Context): NeoForgeManifest {
