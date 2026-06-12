@@ -62,7 +62,7 @@ public final class ChatImageTextureManager {
 	}
 
 	private void uploadTexture(ActiveChatImage image, NativeImage nativeImage) {
-		try {
+		try (nativeImage) {
 			int srcW = nativeImage.getWidth();
 			int srcH = nativeImage.getHeight();
 
@@ -89,8 +89,6 @@ public final class ChatImageTextureManager {
 		} catch (Exception e) {
 			LOGGER.warn("😿 failed to upload image for {}: {}", image.getData().uri(), e.getMessage());
 			image.setState(ChatImageRenderingState.FAILED);
-		} finally {
-			nativeImage.close();
 		}
 	}
 
