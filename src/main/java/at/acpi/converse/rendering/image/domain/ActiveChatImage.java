@@ -25,17 +25,17 @@ public class ActiveChatImage {
 		return this.state.get();
 	}
 
+	public void setState(ChatImageRenderingState newState) {
+		this.state.set(newState);
+		this.touch();
+	}
+
 	public long getLastAccessMs() {
 		return this.lastAccessMs;
 	}
 
 	public ChatImageData getData() {
 		return this.data;
-	}
-
-	public void setState(ChatImageRenderingState newState) {
-		this.state.set(newState);
-		this.touch();
 	}
 
 	public boolean compareAndSetState(ChatImageRenderingState expectedState, ChatImageRenderingState newState) {

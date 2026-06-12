@@ -42,8 +42,11 @@ public final class ImageLoadingOrchestrator {
 		ImageProcessingResult result = service.compile(uri);
 		if (result instanceof ImageProcessingResult.Success(ChatImageData data)) {
 			ActiveChatImage image = cachePool.getOrCreate(uri.toString(), data);
+			ChatImageRenderingState state = image.getState();
 
-			if (image.compareAndSetState(ChatImageRenderingState.PENDING, ChatImageRenderingState.LOADING)) {
+			if (state != ChatImageRenderingState.PENDING) {
+				image.touch();
+			} else if (image.compareAndSetState(ChatImageRenderingState.PENDING, ChatImageRenderingState.LOADING)) {
 				fetchBytesAsync(image);
 			}
 			return Optional.of(image);
