@@ -1,4 +1,4 @@
-package at.acpi.converse.animation;
+package at.acpi.converse.rendering.animation;
 
 public class AnimationMath {
 	private static float OVERSHOOT = 1.70158f;

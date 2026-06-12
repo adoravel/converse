@@ -1,4 +1,4 @@
-package at.acpi.converse.animation;
+package at.acpi.converse.rendering.animation;
 
 public class MessageSlideController implements AnimationController {
 	private final AnimationClock clock;

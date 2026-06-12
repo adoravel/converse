@@ -1,6 +1,6 @@
 package at.acpi.converse.mixin.chatAnimation;
 
-import at.acpi.converse.animation.AnimationStateProvider;
+import at.acpi.converse.rendering.animation.AnimationStateProvider;
 import at.acpi.converse.config.ConverseAppearanceConfig;
 import at.acpi.converse.config.ConverseConfig;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;

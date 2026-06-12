@@ -1,8 +1,8 @@
 package at.acpi.converse.mixin.chatAnimation;
 
-import at.acpi.converse.animation.AnimationClock;
-import at.acpi.converse.animation.AnimationStateProvider;
-import at.acpi.converse.animation.MessageSlideController;
+import at.acpi.converse.rendering.animation.AnimationClock;
+import at.acpi.converse.rendering.animation.AnimationStateProvider;
+import at.acpi.converse.rendering.animation.MessageSlideController;
 import at.acpi.converse.config.ConverseAppearanceConfig;
 import net.minecraft.client.gui.components.ChatComponent;
 import org.spongepowered.asm.mixin.Mixin;
