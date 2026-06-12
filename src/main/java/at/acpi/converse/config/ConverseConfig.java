@@ -10,11 +10,15 @@ import net.minecraft.network.chat.Component;
 
 public class ConverseConfig {
 	public static ConverseAppearanceConfig appearance() {
-		return ConverseAppearanceConfig.HANDLER.instance();
+		return ConverseAppearanceConfig.get();
 	}
 
 	public static ConverseDisplayConfig display() {
-		return ConverseDisplayConfig.HANDLER.instance();
+		return ConverseDisplayConfig.get();
+	}
+
+	public static ConverseImageConfig image() {
+		return ConverseImageConfig.get();
 	}
 
 	public static <T> ConfigClassHandler<T> create(String name, Class<T> clazz) {
@@ -42,6 +46,7 @@ public class ConverseConfig {
 				.title(Component.translatable("text.converse.config.title"))
 				.category(ConverseDisplayConfig.category())
 				.category(ConverseAppearanceConfig.category())
+				.category(ConverseImageConfig.category())
 				.save(ConverseConfig::save)
 				.build()
 				.generateScreen(parent);
