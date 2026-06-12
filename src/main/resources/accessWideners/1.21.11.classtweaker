@@ -1,0 +1,7 @@
+classTweaker	v1	named
+
+accessible class net/minecraft/client/gui/components/ChatComponent$DrawingBackgroundGraphicsAccess
+accessible class net/minecraft/client/gui/components/ChatComponent$DrawingFocusedGraphicsAccess
+
+accessible field net/minecraft/client/gui/components/ChatComponent$DrawingBackgroundGraphicsAccess graphics Lnet/minecraft/client/gui/GuiGraphics;
+accessible field net/minecraft/client/gui/components/ChatComponent$DrawingFocusedGraphicsAccess graphics Lnet/minecraft/client/gui/GuiGraphics;
