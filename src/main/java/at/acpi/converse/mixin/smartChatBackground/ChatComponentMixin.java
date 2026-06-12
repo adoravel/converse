@@ -10,17 +10,17 @@ import net.minecraft.client.gui.components.ChatComponent;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.Mixin;
 
-//? <=1.21.11 {
 import net.minecraft.client.GuiMessage;
- //?} else {
-/*import net.minecraft.client.multiplayer.chat.GuiMessage;
-*///?}
 
 @Mixin(ChatComponent.class)
 public class ChatComponentMixin {
 	//? <=1.21.11 {
 	@WrapOperation(
+			//? fabric {
 			method = "method_75802",
+			//?} else neoforge {
+			/*method = "lambda$render$1",
+			*///?}
 			at = @At(
 					value = "INVOKE",
 					target = "Lnet/minecraft/client/gui/components/ChatComponent$ChatGraphicsAccess;fill(IIIII)V"
