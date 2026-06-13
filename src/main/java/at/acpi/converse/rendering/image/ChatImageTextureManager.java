@@ -5,6 +5,8 @@ import at.acpi.converse.config.ConverseConfig;
 import at.acpi.converse.rendering.image.domain.ActiveChatImage;
 import at.acpi.converse.rendering.image.domain.ChatImageData;
 import at.acpi.converse.rendering.image.domain.ChatImageRenderingState;
+import at.acpi.converse.rendering.image.format.ImageFormat;
+import at.acpi.converse.rendering.image.pipeline.FormatProcessingResult;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
@@ -12,7 +14,6 @@ import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -36,8 +37,8 @@ public final class ChatImageTextureManager {
 	/**
 	 * Schedules image decoding and GL uploading.
 	 */
-	public void decodeAndScheduleUploadAsync(ActiveChatImage image, byte[] bytes) {
-		executor.submit(() -> decodeAndScheduleUpload(image, bytes));
+	public void decodeAndScheduleUploadAsync(ActiveChatImage image, byte[] bytes, ImageFormat format) {
+		executor.submit(() -> decodeAndScheduleUpload(image, bytes, format));
 	}
 
 	/**
@@ -51,12 +52,19 @@ public final class ChatImageTextureManager {
 		}
 	}
 
-	private void decodeAndScheduleUpload(ActiveChatImage image, byte[] bytes) {
+	@SuppressWarnings("resource")
+	private void decodeAndScheduleUpload(ActiveChatImage image, byte[] bytes, ImageFormat format) {
+		FormatProcessingResult result = format.decoder().decode(bytes);
+		if (result instanceof FormatProcessingResult.Failure failure) {
+			LOGGER.warn("😿 failed to decode image from {}: {}", image.getData().uri(), failure.message());
+			image.setState(ChatImageRenderingState.FAILED);
+			return;
+		}
 		try {
-			NativeImage nativeImage = NativeImage.read(new ByteArrayInputStream(bytes));
+			var nativeImage = ((FormatProcessingResult.Success) result).data();
 			Minecraft.getInstance().execute(() -> uploadTexture(image, nativeImage));
 		} catch (Exception e) {
-			LOGGER.warn("😿 failed to decode image from {}: {}", image.getData().uri(), e.getMessage());
+			LOGGER.warn("😿 failed to upload image from {}: {}", image.getData().uri(), e.getMessage());
 			image.setState(ChatImageRenderingState.FAILED);
 		}
 	}

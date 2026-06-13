@@ -4,10 +4,13 @@ import at.acpi.converse.config.ConverseConfig;
 import at.acpi.converse.rendering.image.ChatImageTextureManager;
 import at.acpi.converse.rendering.image.domain.ActiveChatImage;
 import at.acpi.converse.rendering.image.domain.ChatImageData;
+import at.acpi.converse.rendering.image.format.ImageFormat;
+import at.acpi.converse.rendering.image.pipeline.ImageProcessingResult;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class ImageCachePool {
 	private final Map<String, ActiveChatImage> cache;
@@ -28,8 +31,16 @@ public class ImageCachePool {
 		};
 	}
 
-	public synchronized ActiveChatImage getOrCreate(String id, ChatImageData fallbackData) {
-		return cache.computeIfAbsent(id, key -> new ActiveChatImage(fallbackData));
+	public synchronized Optional<ActiveChatImage> getOrCreate(
+			String key, ImageFormat imageFormat, Supplier<ImageProcessingResult> fallback
+	) {
+		ActiveChatImage image = cache.computeIfAbsent(key, k -> {
+			if (fallback.get() instanceof ImageProcessingResult.Success(ChatImageData data)) {
+				return new ActiveChatImage(data, imageFormat);
+			}
+			return null;
+		});
+		return Optional.ofNullable(image);
 	}
 
 	public synchronized Optional<ActiveChatImage> lookup(String id) {

@@ -4,6 +4,8 @@ import at.acpi.converse.config.ConverseConfig;
 import at.acpi.converse.hotkey.ConverseHotkeys;
 import at.acpi.converse.rendering.image.ChatImageTextureManager;
 import at.acpi.converse.rendering.image.ImageLoadingOrchestrator;
+import at.acpi.converse.rendering.image.format.ImageFormatRegistry;
+import at.acpi.converse.rendering.image.format.StaticFormat;
 import at.acpi.converse.rendering.image.hosting.DiscordImageHostingService;
 import at.acpi.converse.rendering.image.hosting.GenericImageHostingService;
 import at.acpi.converse.rendering.image.hosting.ImageHostingRegistry;
@@ -45,6 +47,10 @@ public final class Converse {
 		);
 		fileCache.pruneFilesystemCacheAsync();
 
+		var formatRegistry = new ImageFormatRegistry.Builder()
+				.register(new StaticFormat())
+				.build();
+
 		var fetcher = new RemoteImageFetcher(fileCache);
 		var textureManager = new ChatImageTextureManager();
 		var cachePool = new ImageCachePool(textureManager);
@@ -54,6 +60,6 @@ public final class Converse {
 				.register(new GenericImageHostingService())
 				.build();
 
-		return new ImageLoadingOrchestrator(hostingRegistry, cachePool, textureManager, fetcher);
+		return new ImageLoadingOrchestrator(hostingRegistry, cachePool, formatRegistry, textureManager, fetcher);
 	}
 }

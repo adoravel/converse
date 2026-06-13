@@ -1,5 +1,6 @@
 package at.acpi.converse.rendering.image.domain;
 
+import at.acpi.converse.rendering.image.format.ImageFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,13 +13,15 @@ public class ActiveChatImage {
 	private static final Logger LOGGER = LoggerFactory.getLogger("converse/images");
 
 	private final ChatImageData data;
+	private final ImageFormat imageFormat;
 
 	private final AtomicReference<ChatImageRenderingState> state =
 			new AtomicReference<>(ChatImageRenderingState.PENDING);
 	private volatile long lastAccessMs = System.currentTimeMillis();
 
-	public ActiveChatImage(ChatImageData data) {
+	public ActiveChatImage(ChatImageData data, ImageFormat imageFormat) {
 		this.data = data;
+		this.imageFormat = imageFormat;
 	}
 
 	public ChatImageRenderingState getState() {
@@ -36,6 +39,10 @@ public class ActiveChatImage {
 
 	public ChatImageData getData() {
 		return this.data;
+	}
+
+	public ImageFormat getImageFormat() {
+		return imageFormat;
 	}
 
 	public boolean compareAndSetState(ChatImageRenderingState expectedState, ChatImageRenderingState newState) {
