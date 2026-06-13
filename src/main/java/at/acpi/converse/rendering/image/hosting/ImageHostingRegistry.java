@@ -1,6 +1,5 @@
 package at.acpi.converse.rendering.image.hosting;
 
-import com.google.common.collect.ImmutableList;
 import org.jspecify.annotations.Nullable;
 
 import java.net.URI;
@@ -8,6 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Ordered registry of {@link ImageHostingRegistry} implementations.
+ * The first registry whose {@link ImageHostingService#isEligible} returns true is used.
+ */
 public final class ImageHostingRegistry {
 	private final List<ImageHostingService> services;
 
@@ -26,8 +29,8 @@ public final class ImageHostingRegistry {
 		return Optional.empty();
 	}
 
-	public ImmutableList<ImageHostingService> services() {
-		return ImmutableList.copyOf(this.services);
+	public List<ImageHostingService> services() {
+		return List.copyOf(this.services);
 	}
 
 	public static class Builder {

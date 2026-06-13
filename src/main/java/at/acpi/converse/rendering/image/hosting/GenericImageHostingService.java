@@ -2,6 +2,7 @@ package at.acpi.converse.rendering.image.hosting;
 
 import at.acpi.converse.config.ConverseConfig;
 import at.acpi.converse.rendering.image.domain.ChatImageData;
+import at.acpi.converse.rendering.image.format.StaticFormat;
 import at.acpi.converse.rendering.image.pipeline.ImageProcessingError;
 import at.acpi.converse.rendering.image.pipeline.ImageProcessingResult;
 import org.apache.commons.io.FilenameUtils;
@@ -13,9 +14,7 @@ import java.util.Locale;
 import java.util.Set;
 
 public class GenericImageHostingService implements ImageHostingService {
-	protected static final Set<String> ACCEPTED_IMAGE_EXTENSIONS = Set.of(
-			"png", "jpg", "jpeg", "gif", "webp", "bmp", "svg"
-	);
+	protected static final Set<String> ACCEPTED_IMAGE_EXTENSIONS = StaticFormat.EXTENSIONS;
 
 	private static final Set<String> IMMUTABLE_CORE_HOSTS = Set.of(
 			"x.kyu.re",
@@ -23,7 +22,7 @@ public class GenericImageHostingService implements ImageHostingService {
 			"discord.com"
 	);
 
-	protected final @Nullable String extractExtension(URI uri) {
+	public static @Nullable String extractExtension(URI uri) {
 		if (uri == null || uri.getPath() == null) {
 			return null;
 		}

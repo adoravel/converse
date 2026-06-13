@@ -6,7 +6,6 @@ package at.acpi.converse.rendering.image.pipeline;
  */
 public enum ImageProcessingError {
 	INVALID_URI,
-	CANT_DECODE,
 
 	/**
 	 * The URL protocol is unsupported (e.g., file:// or ftp:// instead of http/https).

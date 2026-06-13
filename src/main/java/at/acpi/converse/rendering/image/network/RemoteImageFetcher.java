@@ -4,6 +4,7 @@ import at.acpi.converse.rendering.image.storage.ImageFilesystemCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -17,11 +18,6 @@ public class RemoteImageFetcher {
 
 	private final HttpClient http;
 	private final ImageFilesystemCache filesystem;
-
-	public RemoteImageFetcher(HttpClient http, ImageFilesystemCache filesystem) {
-		this.http = http;
-		this.filesystem = filesystem;
-	}
 
 	public RemoteImageFetcher(ImageFilesystemCache filesystem) {
 		this.http = HttpClient.newBuilder()
@@ -37,11 +33,15 @@ public class RemoteImageFetcher {
 	public CompletableFuture<ImageFetchResult> fetchAsync(URI uri) {
 		return CompletableFuture.supplyAsync(() -> {
 			try {
-				byte[] cached = filesystem.readFromCache(uri.toString());
-				if (cached != null) {
-					return new ImageFetchResult.Success(cached);
+				byte[] image = filesystem.readFromCache(uri.toString());
+				if (image == null) {
+					image = fetchRemoteResource(uri);
 				}
-				return new ImageFetchResult.Success(fetchRemoteResource(uri));
+				if (image == null) {
+					return new ImageFetchResult.Failure(new FileNotFoundException());
+				}
+
+				return new ImageFetchResult.Success(image);
 			} catch (Exception e) {
 				return new ImageFetchResult.Failure(e);
 			}
