@@ -21,9 +21,9 @@ public interface Hotkey {
 	 */
 	static Hotkey create(KeybindData data) {
 		//? fabric {
-		return new at.acpi.converse.fabric.FabricHotkeyImpl(data);
+		return new at.acpi.converse.platform.fabric.FabricHotkeyImpl(data);
 		 //? } else neoforge {
-		/*return new at.acpi.converse.neoforge.NeoForgeHotkeyImpl(data);
+		/*return new at.acpi.converse.platform.neoforge.NeoForgeHotkeyImpl(data);
 		*///? }
 	}
 }

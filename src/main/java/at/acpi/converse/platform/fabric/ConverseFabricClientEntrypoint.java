@@ -1,4 +1,4 @@
-package at.acpi.converse.fabric;
+package at.acpi.converse.platform.fabric;
 
 //? fabric {
 

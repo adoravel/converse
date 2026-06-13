@@ -1,4 +1,4 @@
-package at.acpi.converse.neoforge;
+package at.acpi.converse.platform.neoforge;
 
 //? neoforge {
 /*import at.acpi.converse.Converse;
