@@ -25,26 +25,34 @@ public final class ActiveChatImageRenderer {
 
 		image.getImageFormat().render(graphics, textureId, x, y, width, height, alpha);
 	}
-
-	public static int computeImageWidth(double scale) {
+	public static int computeMaxBoundingWidth(double scale) {
 		final int maxWidth = ConverseConfig.image().maxWidth;
 		final int maxChatWidth = (int) ((float) Minecraft.getInstance().gui.getChat().getWidth() / scale) - 8;
 
 		return Math.min(maxWidth, maxChatWidth);
 	}
 
-	public static int computeImageHeight(double scale, ChatImageData data) {
-		final int maxWidth = computeImageWidth(scale);
-
+	private static float calculateScaleRatio(double scale, ChatImageData data) {
+		final int maxWidth = computeMaxBoundingWidth(scale);
 		final int maxHeight = ConverseConfig.image().maxHeight;
+
 		final int maxChatHeight = ChatComponent.getHeight(Minecraft.getInstance().options.chatHeightUnfocused().get());
 		final int targetHeight = Math.min(maxHeight, maxChatHeight);
 
 		float wRatio = (maxWidth > 0) ? (float) data.width() / maxWidth : 1.0f;
 		float hRatio = (targetHeight > 0) ? (float) data.height() / targetHeight : 1.0f;
-		float dominant = Math.max(wRatio, hRatio);
 
-		return Math.max(1, (int) (data.height() / dominant));
+		return Math.max(wRatio, hRatio);
+	}
+
+	public static int computeImageWidth(double scale, ChatImageData data) {
+		float ratio = Math.max(1f, calculateScaleRatio(scale, data));
+		return Math.max(1, (int) (data.width() / ratio));
+	}
+
+	public static int computeImageHeight(double scale, ChatImageData data) {
+		float ratio = Math.max(1f, calculateScaleRatio(scale, data));
+		return Math.max(1, (int) (data.height() / ratio));
 	}
 
 	public static int computeImageHeight(ChatImageData imageData) {
@@ -55,19 +63,22 @@ public final class ActiveChatImageRenderer {
 		var font = Minecraft.getInstance().font;
 		var glyph = font.getGlyphSource(Style.EMPTY.getFont()).getGlyph(input);
 		var glyphWidth = Mth.ceil(glyph.info().getAdvance());
-		return width / glyphWidth - 1;
+		return width / glyphWidth;
+	}
+
+	public static double getLineHeight() {
+		return 9.0F * (Minecraft.getInstance().options.chatLineSpacing().get() + 1.0F);
 	}
 
 	public static int computeImageLineCount(int height) {
-		final int lineHeight = Minecraft.getInstance().gui.getChat().getLineHeight();
-		return Mth.ceil((float) height / lineHeight);
+		return Mth.ceil((double) height / getLineHeight()) + 1;
 	}
 
 	public static void renderInChat(GuiGraphics graphics, ActiveChatImage image, int x, int y, float alpha) {
 		final double scale = Minecraft.getInstance().gui.getChat().getScale();
-		final int width = computeImageWidth(scale),
+		final int width = computeImageWidth(scale, image.getData()),
 				height = computeImageHeight(scale, image.getData());
 
-		render(graphics, image, x, y, width, height, alpha);
+		render(graphics, image, x, Mth.floor(y + getLineHeight()), width, height, alpha);
 	}
 }
