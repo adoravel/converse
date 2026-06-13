@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HexFormat;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -105,16 +106,9 @@ public final class ChatImageTextureManager {
 		try {
 			MessageDigest digest = MessageDigest.getInstance("SHA-256");
 			byte[] hashBytes = digest.digest(url.getBytes(StandardCharsets.UTF_8));
-
-			StringBuilder result = new StringBuilder();
-			for (byte b : hashBytes) {
-				result.append(String.format("%02x", b));
-			}
-			return result.toString();
+			return HexFormat.of().formatHex(hashBytes);
 		} catch (NoSuchAlgorithmException e) {
 			throw new IllegalStateException("jvm somehow missing standard sha-256 provider???", e);
-		} catch (Exception e) {
-			return Integer.toHexString(url.hashCode());
 		}
 	}
 }
