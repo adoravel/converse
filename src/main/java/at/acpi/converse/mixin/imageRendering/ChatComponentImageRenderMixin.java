@@ -20,7 +20,7 @@ import java.net.URI;
 import java.util.Optional;
 
 @Mixin(targets = "net.minecraft.client.gui.components.ChatComponent$1")
-public class ChatComponentRenderMixin {
+public class ChatComponentImageRenderMixin {
 	@Unique
 	private static void converse$image$renderImage(
 			ChatComponent.ChatGraphicsAccess graphicsAccess, ActiveChatImage image, int y, float alpha

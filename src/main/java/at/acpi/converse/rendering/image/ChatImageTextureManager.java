@@ -85,6 +85,7 @@ public final class ChatImageTextureManager {
 
 			if (image.compareAndSetState(ChatImageRenderingState.LOADING, ChatImageRenderingState.LOADED)) {
 				image.getData().updateTextureData(id, renderedWidth, renderedHeight);
+				Minecraft.getInstance().gui.getChat().rescaleChat();
 			}
 		} catch (Exception e) {
 			LOGGER.warn("😿 failed to upload image for {}: {}", image.getData().uri(), e.getMessage());

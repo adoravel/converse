@@ -13,9 +13,7 @@ import net.minecraft.client.GuiMessage;
 import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -23,28 +21,26 @@ import java.net.URI;
 import java.util.List;
 
 @Mixin(ChatComponent.class)
-public abstract class ChatComponentScanMixin {
-	@Final
-	@Shadow
-	private List<GuiMessage.Line> trimmedMessages;
+public abstract class ChatComponentLayoutMixin {
 
 	@Unique
-	private static void converse$image$tagLastLine(GuiMessage.Line line, GuiMessage message) {
+	private static boolean converse$image$tagLastLine(GuiMessage.Line line, GuiMessage message) {
 		final String content = message.content().getString();
 		List<URI> urls = ImageUrlDetector.findUrls(content);
-		if (urls.isEmpty()) return;
+		if (urls.isEmpty()) return false;
 
 		final ImageHostingRegistry registry = Converse.imageLoadingOrchestrator().hostingRegistry();
 		for (final URI uri : urls) {
 			if (registry.findServiceFor(uri).isPresent()) {
 				((ImageAttributeHolder) (Object) line).converse$setImageUri(uri);
-				break;
+				return true;
 			}
 		}
+		return false;
 	}
 
 	@Unique
-	private void converse$image$injectImageDimensions(GuiMessage.Line line) {
+	private static void converse$image$injectImageDimensions(List<GuiMessage.Line> buffer, GuiMessage.Line line) {
 		final URI uri = ((ImageAttributeHolder) (Object) line).converse$getImageUri();
 		if (uri == null) return;
 
@@ -57,9 +53,7 @@ public abstract class ChatComponentScanMixin {
 
 			FormattedCharSequence visualOrderText = component.getVisualOrderText();
 			for (int i = 0; i < lineCount; i++) {
-				this.trimmedMessages.add(
-						new GuiMessage.Line(line.addedTime(), visualOrderText, null, true)
-				);
+				buffer.addFirst(new GuiMessage.Line(line.addedTime(), visualOrderText, null, true));
 			}
 		});
 	}
@@ -71,17 +65,17 @@ public abstract class ChatComponentScanMixin {
 					target = "Ljava/util/List;addFirst(Ljava/lang/Object;)V"
 			)
 	)
-	void converse$image$tagLastLine(
-			List<GuiMessage.Line> instance,
-			Object line, Operation<Void> original,
-			@Local(argsOnly = true) GuiMessage message,
-			@Local(ordinal = 1) boolean endOfEntry
+	private void converse$image$scan(
+			List<GuiMessage.Line> trimmedMessages, Object line,
+			Operation<Void> original,
+			@Local(ordinal = 1) boolean endOfEntry,
+			@Local(argsOnly = true) GuiMessage message
 	) {
-		original.call(instance, line);
+		original.call(trimmedMessages, line);
 		if (endOfEntry && ConverseConfig.image().enableImages) {
 			final var l = (GuiMessage.Line) line;
-			converse$image$tagLastLine(l, message);
-			converse$image$injectImageDimensions(l);
+			if (converse$image$tagLastLine(l, message))
+				converse$image$injectImageDimensions(trimmedMessages, l);
 		}
 	}
 }

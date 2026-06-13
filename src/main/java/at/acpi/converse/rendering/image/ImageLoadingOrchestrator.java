@@ -46,13 +46,14 @@ public final class ImageLoadingOrchestrator {
 		Optional<ActiveChatImage> maybeImage = requestCachedImage(uri);
 		if (maybeImage.isPresent()) return maybeImage;
 
-		return Converse.imageLoadingOrchestrator()
-				.hostingRegistry()
-				.findServiceFor(uri)
-				.flatMap(service ->
-						service.compile(uri) instanceof ImageProcessingResult.Success(ChatImageData data)
-								? Optional.of(cachePool.getOrCreate(uri.toString(), data))
-								: Optional.empty())
+		return requestCachedImage(uri)
+				.or(() -> Converse.imageLoadingOrchestrator()
+						.hostingRegistry()
+						.findServiceFor(uri)
+						.flatMap(service ->
+								service.compile(uri) instanceof ImageProcessingResult.Success(ChatImageData data)
+										? Optional.of(cachePool.getOrCreate(uri.toString(), data))
+										: Optional.empty()))
 				.map(image -> {
 					if (image.getState() != ChatImageRenderingState.PENDING)
 						image.touch();
