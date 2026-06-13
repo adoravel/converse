@@ -42,5 +42,7 @@
   "text.converse.config.images.option.cacheExpiryDays.desc": "Number of days an unused cached image is kept before being deleted",
   "text.converse.config.images.group.filter": "Filters",
   "text.converse.config.images.option.requireExtension": "Require Image Extension",
-  "text.converse.config.images.option.requireExtension.desc": "Also check URL path ends with a known image extension (.png .jpg .jpeg .gif .webp)"
+  "text.converse.config.images.option.requireExtension.desc": "Also check URL path ends with a known image extension (.png .jpg .jpeg .gif .webp)",
+  "text.converse.config.images.option.domainWhitelist": "Domain Whitelist",
+  "text.converse.config.images.option.domainWhitelist.desc": "Limits image loading to trusted domains. Leave this empty to disable filtering"
 }

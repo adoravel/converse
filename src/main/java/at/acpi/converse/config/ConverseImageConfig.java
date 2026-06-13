@@ -1,18 +1,20 @@
 package at.acpi.converse.config;
 
 import dev.isxander.yacl3.api.ConfigCategory;
+import dev.isxander.yacl3.api.ListOption;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.OptionGroup;
 import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
+import dev.isxander.yacl3.api.controller.StringControllerBuilder;
 import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
-import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ConverseImageConfig {
 	static final ConfigClassHandler<ConverseImageConfig> HANDLER =
@@ -27,7 +29,7 @@ public class ConverseImageConfig {
 	public int maxCacheEntries = 64;
 	public int cacheExpiryDays = 5;
 
-	public HashSet<String> domainWhitelist = new HashSet<>();
+	public Set<String> domainWhitelist = Set.of("i.imgur.com");
 	public boolean requireImageExtension = true;
 
 	public static ConverseImageConfig get() {
@@ -101,6 +103,16 @@ public class ConverseImageConfig {
 								.binding(true, () -> get().requireImageExtension, v -> get().requireImageExtension = v)
 								.controller(BooleanControllerBuilder::create)
 								.build())
+						.build())
+				.group(ListOption.<String>createBuilder()
+						.name(Component.translatable("text.converse.config.images.option.domainWhitelist"))
+						.description(OptionDescription.createBuilder()
+								.text(Component.translatable("text.converse.config.images.option.domainWhitelist.desc"))
+								.build())
+						.binding(List.of("i.imgur.com"), () -> new ArrayList<>(get().domainWhitelist),
+								v -> get().domainWhitelist = new HashSet<>(v))
+						.controller(StringControllerBuilder::create)
+						.initial("cdn.myverycoolsite.com")
 						.build())
 				.build();
 	}
