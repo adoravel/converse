@@ -57,14 +57,12 @@ public class ChatComponentImageRenderMixin {
 		if (uri == null)
 			return original.call(access, y, alpha, content);
 
-		Optional<ActiveChatImage> maybeImage = Converse.imageLoadingOrchestrator()
-				.requestCachedImage(uri);
-		if (maybeImage.isEmpty())
-			return hovered;
-
-		var image = maybeImage.get();
-		if (image.getState() == ChatImageRenderingState.LOADED)
-			converse$image$renderImage(access, image, y, alpha);
+		Converse.imageLoadingOrchestrator()
+				.requestCachedImage(uri)
+				.ifPresent(image -> {
+					if (image.getState() == ChatImageRenderingState.LOADED)
+						converse$image$renderImage(access, image, y, alpha);
+				});
 
 		return hovered;
 	}

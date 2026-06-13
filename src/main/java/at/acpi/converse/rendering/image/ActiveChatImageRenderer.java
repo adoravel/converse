@@ -7,10 +7,8 @@ import at.acpi.converse.rendering.image.domain.ChatImageRenderingState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ChatComponent;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 
 public final class ActiveChatImageRenderer {
@@ -25,8 +23,7 @@ public final class ActiveChatImageRenderer {
 		Identifier textureId = image.getData().resourceIdentifier();
 		if (textureId == null) return;
 
-		final int color = ARGB.white(alpha);
-		graphics.blit(RenderPipelines.GUI_TEXTURED, textureId, x, y, 0, 0, width, height, width, height, color);
+		image.getImageFormat().render(graphics, textureId, x, y, width, height, alpha);
 	}
 
 	public static int computeImageWidth(double scale) {
@@ -58,7 +55,7 @@ public final class ActiveChatImageRenderer {
 		var font = Minecraft.getInstance().font;
 		var glyph = font.getGlyphSource(Style.EMPTY.getFont()).getGlyph(input);
 		var glyphWidth = Mth.ceil(glyph.info().getAdvance());
-		return width / glyphWidth;
+		return width / glyphWidth - 1;
 	}
 
 	public static int computeImageLineCount(int height) {
