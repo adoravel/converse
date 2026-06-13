@@ -21,10 +21,10 @@ public class ConverseImageConfig {
 	public boolean enableImages = true;
 	public boolean replaceUrlWithImage = true;
 
-	public int maxWidth = 256;
-	public int maxHeight = 256;
+	public int maxWidth = 160;
+	public int maxHeight = 160;
 
-	public int maxCacheEntries = 128;
+	public int maxCacheEntries = 64;
 	public int cacheExpiryDays = 5;
 
 	public HashSet<String> domainWhitelist = new HashSet<>();
@@ -57,12 +57,18 @@ public class ConverseImageConfig {
 						.name(Component.translatable("text.converse.config.images.group.size"))
 						.option(Option.<Integer>createBuilder()
 								.name(Component.translatable("text.converse.config.images.option.maxWidth"))
-								.binding(200, () -> get().maxWidth, v -> get().maxWidth = v)
+								.description(OptionDescription.createBuilder()
+										.text(Component.translatable("text.converse.config.images.option.maxWidth.desc"))
+										.build())
+								.binding(160, () -> get().maxWidth, v -> get().maxWidth = v)
 								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(32, 400).step(8))
 								.build())
 						.option(Option.<Integer>createBuilder()
 								.name(Component.translatable("text.converse.config.images.option.maxHeight"))
-								.binding(100, () -> get().maxHeight, v -> get().maxHeight = v)
+								.description(OptionDescription.createBuilder()
+										.text(Component.translatable("text.converse.config.images.option.maxHeight.desc"))
+										.build())
+								.binding(160, () -> get().maxHeight, v -> get().maxHeight = v)
 								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(16, 300).step(8))
 								.build())
 						.build())
@@ -70,12 +76,18 @@ public class ConverseImageConfig {
 						.name(Component.translatable("text.converse.config.images.group.cache"))
 						.option(Option.<Integer>createBuilder()
 								.name(Component.translatable("text.converse.config.images.option.maxCacheEntries"))
-								.binding(200, () -> get().maxCacheEntries, v -> get().maxCacheEntries = v)
+								.description(OptionDescription.createBuilder()
+										.text(Component.translatable("text.converse.config.images.option.maxCacheEntries.desc"))
+										.build())
+								.binding(64, () -> get().maxCacheEntries, v -> get().maxCacheEntries = v)
 								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(10, 1000).step(10))
 								.build())
 						.option(Option.<Integer>createBuilder()
 								.name(Component.translatable("text.converse.config.images.option.cacheExpiryDays"))
-								.binding(7, () -> get().cacheExpiryDays, v -> get().cacheExpiryDays = v)
+								.description(OptionDescription.createBuilder()
+										.text(Component.translatable("text.converse.config.images.option.cacheExpiryDays.desc"))
+										.build())
+								.binding(5, () -> get().cacheExpiryDays, v -> get().cacheExpiryDays = v)
 								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(1, 90).step(1))
 								.build())
 						.build())
@@ -83,6 +95,9 @@ public class ConverseImageConfig {
 						.name(Component.translatable("text.converse.config.images.group.filter"))
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("text.converse.config.images.option.requireExtension"))
+								.description(OptionDescription.createBuilder()
+										.text(Component.translatable("text.converse.config.images.option.requireExtension.desc"))
+										.build())
 								.binding(true, () -> get().requireImageExtension, v -> get().requireImageExtension = v)
 								.controller(BooleanControllerBuilder::create)
 								.build())
