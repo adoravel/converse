@@ -15,6 +15,7 @@
     "imageRendering.ChatComponentImageRenderMixin",
     "imageRendering.ChatComponentLayoutMixin",
     "imageRendering.GuiMessageLineImageHolderMixin",
+    "imageRendering.LineScalingListenerMixin",
     "removeMessageIndicator.GuiMessageLineMixin",
     "smartChatBackground.ChatComponentMixin"
   ],
