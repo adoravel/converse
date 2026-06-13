@@ -10,7 +10,11 @@ public interface ImageAttributeHolder {
 	void converse$setImageUri(@Nullable URI url);
 
 	default boolean converse$isImagePlaceholder() {
-		return converse$getImageUri() != null;
+		return converse$getImageUri() != null && converse$getImagePlaceholderIndex() >= 0;
+	}
+
+	default boolean converse$isTooltipAnchor() {
+		return converse$getImageUri() != null && converse$getImagePlaceholderIndex() < 0;
 	}
 
 	void converse$setImagePlaceholderIndex(int index);

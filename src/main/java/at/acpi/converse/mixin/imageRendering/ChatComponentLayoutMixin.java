@@ -41,7 +41,9 @@ public abstract class ChatComponentLayoutMixin {
 		Converse.imageLoadingOrchestrator().requestImage(uri).ifPresent(image -> {
 			if (image.getState() != ChatImageRenderingState.LOADED) return;
 			if (!ConverseConfig.image().replaceUrlWithImage) {
-				((ImageAttributeHolder) (Object) line).converse$setImageUri(uri);
+				ImageAttributeHolder anchor = (ImageAttributeHolder)(Object) line;
+				anchor.converse$setImageUri(uri);
+				anchor.converse$setImagePlaceholderIndex(-1);
 				return;
 			}
 

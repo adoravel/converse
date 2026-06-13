@@ -26,7 +26,7 @@ public class ChatComponentImageRenderMixin {
 					target = "Lnet/minecraft/client/gui/components/ChatComponent$ChatGraphicsAccess;handleMessage(IFLnet/minecraft/util/FormattedCharSequence;)Z"
 			)
 	)
-	private boolean converse$image$renderImageAtPivot(
+	private boolean converse$image$render(
 			ChatComponent.ChatGraphicsAccess access,
 			int y, float alpha, FormattedCharSequence content,
 			Operation<Boolean> original,
@@ -37,11 +37,10 @@ public class ChatComponentImageRenderMixin {
 		if (line == null) return hovered;
 
 		var config = ConverseConfig.image();
-		if (!config.enableImages || !config.replaceUrlWithImage)
+		if (!config.enableImages)
 			return hovered;
 
 		ImageAttributeHolder holder = (ImageAttributeHolder) (Object) line;
-		if (!holder.converse$isImagePlaceholder()) return hovered;
 
 		URI uri = holder.converse$getImageUri();
 		if (uri == null) return hovered;
@@ -51,11 +50,20 @@ public class ChatComponentImageRenderMixin {
 				.ifPresent(image -> {
 					if (image.getState() != ChatImageRenderingState.LOADED) return;
 
-					var graphics =
-							access instanceof ChatComponent.DrawingFocusedGraphicsAccess f
-									? f.graphics
-									: ((ChatComponent.DrawingBackgroundGraphicsAccess) access).graphics;
-					ActiveChatImageRenderer.renderInChat(graphics, holder, image, 0, y, alpha);
+					System.out.println("Hovered: " + hovered);
+					System.out.println("converse$isTooltipAnchor: " + holder.converse$isTooltipAnchor());
+
+					if (config.replaceUrlWithImage && holder.converse$isImagePlaceholder()) {
+						var graphics =
+								access instanceof ChatComponent.DrawingFocusedGraphicsAccess f
+										? f.graphics
+										: ((ChatComponent.DrawingBackgroundGraphicsAccess) access).graphics;
+						ActiveChatImageRenderer.renderInChat(graphics, holder, image, 0, y, alpha);
+					} else if (holder.converse$isTooltipAnchor()
+							&& access instanceof ChatComponent.DrawingFocusedGraphicsAccess f){
+						ActiveChatImageRenderer.renderTooltip(
+								f.graphics, f.font, image, f.globalMouseX, f.globalMouseY, alpha);
+					}
 				});
 
 		return hovered;

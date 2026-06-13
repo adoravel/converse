@@ -6,6 +6,10 @@ accessible class net/minecraft/client/gui/components/ChatComponent$DrawingFocuse
 accessible field net/minecraft/client/gui/components/ChatComponent$DrawingBackgroundGraphicsAccess graphics Lnet/minecraft/client/gui/GuiGraphics;
 accessible field net/minecraft/client/gui/components/ChatComponent$DrawingFocusedGraphicsAccess graphics Lnet/minecraft/client/gui/GuiGraphics;
 
+accessible field net/minecraft/client/gui/components/ChatComponent$DrawingFocusedGraphicsAccess font Lnet/minecraft/client/gui/Font;
+accessible field net/minecraft/client/gui/components/ChatComponent$DrawingFocusedGraphicsAccess globalMouseX I
+accessible field net/minecraft/client/gui/components/ChatComponent$DrawingFocusedGraphicsAccess globalMouseY I
+
 accessible method net/minecraft/client/gui/components/ChatComponent getWidth ()I
 accessible method net/minecraft/client/gui/components/ChatComponent getLineHeight ()I
 accessible method net/minecraft/client/gui/components/ChatComponent getScale ()D

@@ -1,15 +1,20 @@
 package at.acpi.converse.rendering.image;
 
 import at.acpi.converse.config.ConverseConfig;
+import at.acpi.converse.rendering.image.component.ImageTooltipComponent;
 import at.acpi.converse.rendering.image.domain.ActiveChatImage;
 import at.acpi.converse.rendering.image.domain.ChatImageData;
 import at.acpi.converse.rendering.image.domain.ImageAttributeHolder;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ChatComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
+
+import java.util.List;
 
 public final class ActiveChatImageRenderer {
 	private ActiveChatImageRenderer() {
@@ -43,6 +48,10 @@ public final class ActiveChatImageRenderer {
 	public static int computeImageHeight(double scale, ChatImageData data) {
 		float ratio = Math.max(1f, calculateScaleRatio(scale, data));
 		return Math.max(1, (int) (data.height() / ratio));
+	}
+
+	public static int computeImageWidth(ChatImageData imageData) {
+		return computeImageWidth(Minecraft.getInstance().gui.getChat().getScale(), imageData);
 	}
 
 	public static int computeImageHeight(ChatImageData imageData) {
@@ -83,5 +92,12 @@ public final class ActiveChatImageRenderer {
 		image.getImageFormat().render(graphics, textureId, x, renderY, width, height, alpha);
 		graphics.disableScissor();
 		graphics.pose().popMatrix();
+	}
+
+	public static void renderTooltip(
+			GuiGraphics graphics, Font font, ActiveChatImage image, int mouseX, int mouseY, float alpha)
+	{
+		var component = new ImageTooltipComponent(image, alpha);
+		graphics.renderTooltip(font, List.of(component), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
 	}
 }
