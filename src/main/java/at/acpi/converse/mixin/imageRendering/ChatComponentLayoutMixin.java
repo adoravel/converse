@@ -3,57 +3,61 @@ package at.acpi.converse.mixin.imageRendering;
 import at.acpi.converse.Converse;
 import at.acpi.converse.config.ConverseConfig;
 import at.acpi.converse.rendering.image.ActiveChatImageRenderer;
+import at.acpi.converse.rendering.image.domain.ChatImageRenderingState;
 import at.acpi.converse.rendering.image.domain.ImageAttributeHolder;
-import at.acpi.converse.rendering.image.hosting.ImageHostingRegistry;
 import at.acpi.converse.rendering.image.hosting.ImageUrlDetector;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.GuiMessage;
 import net.minecraft.client.gui.components.ChatComponent;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 import java.net.URI;
 import java.util.List;
 
+import static at.acpi.converse.rendering.image.ActiveChatImageRenderer.computeImageWidth;
+
 @Mixin(ChatComponent.class)
 public abstract class ChatComponentLayoutMixin {
 
-	@Unique
-	private static boolean converse$image$tagLastLine(GuiMessage.Line line, GuiMessage message) {
-		final String content = message.content().getString();
-		List<URI> urls = ImageUrlDetector.findUrls(content);
-		if (urls.isEmpty()) return false;
+	@Shadow
+	public abstract double getScale();
 
-		final ImageHostingRegistry registry = Converse.imageLoadingOrchestrator().hostingRegistry();
-		for (final URI uri : urls) {
-			if (registry.findServiceFor(uri).isPresent()) {
-				((ImageAttributeHolder) (Object) line).converse$setImageUri(uri);
-				return true;
-			}
-		}
-		return false;
+	@Unique
+	private static List<URI> converse$filterLinks(GuiMessage message) {
+		final String content = message.content().getString();
+		return ImageUrlDetector.findUrls(content);
 	}
 
 	@Unique
-	private static void converse$image$injectImageDimensions(List<GuiMessage.Line> buffer, GuiMessage.Line line) {
-		final URI uri = ((ImageAttributeHolder) (Object) line).converse$getImageUri();
-		if (uri == null) return;
-
+	@SuppressWarnings("DataFlowIssue")
+	private void converse$image$injectImageMetadata(URI uri, List<GuiMessage.Line> buffer, GuiMessage.Line line) {
 		Converse.imageLoadingOrchestrator().requestImage(uri).ifPresent(image -> {
+			if (image.getState() != ChatImageRenderingState.LOADED) return;
+			if (!ConverseConfig.image().replaceUrlWithImage) {
+				((ImageAttributeHolder) (Object) line).converse$setImageUri(uri);
+				return;
+			}
+
 			int imageHeight = ActiveChatImageRenderer.computeImageHeight(image.getData());
 			int lineCount = ActiveChatImageRenderer.computeImageLineCount(imageHeight);
 
-			int characterCount = ActiveChatImageRenderer.computeImageLineWidth(image.getData().width(), ' ');
-			Component component = Component.literal(" ".repeat(characterCount));
+			final int width = computeImageWidth(getScale(), image.getData());
+			int characterCount = ActiveChatImageRenderer.computeImageLineWidth(width, ' ');
+			FormattedCharSequence stubContent = FormattedCharSequence.forward(" ".repeat(characterCount), Style.EMPTY);
 
-			FormattedCharSequence visualOrderText = component.getVisualOrderText();
 			for (int i = 0; i < lineCount; i++) {
-				buffer.addFirst(new GuiMessage.Line(line.addedTime(), visualOrderText, null, true));
+				GuiMessage.Line stub = new GuiMessage.Line(line.addedTime(), stubContent, null, true);
+				ImageAttributeHolder holder = (ImageAttributeHolder) (Object) stub;
+				holder.converse$setImageUri(uri);
+				holder.converse$setImagePlaceholderIndex(i);
+				buffer.addFirst(stub);
 			}
 		});
 	}
@@ -72,10 +76,19 @@ public abstract class ChatComponentLayoutMixin {
 			@Local(argsOnly = true) GuiMessage message
 	) {
 		original.call(trimmedMessages, line);
-		if (endOfEntry && ConverseConfig.image().enableImages) {
-			final var l = (GuiMessage.Line) line;
-			if (converse$image$tagLastLine(l, message))
-				converse$image$injectImageDimensions(trimmedMessages, l);
+
+		if (!endOfEntry || !ConverseConfig.image().enableImages)
+			return;
+
+		var uris = converse$filterLinks(message);
+		if (uris.isEmpty()) return;
+
+		var registry = Converse.imageLoadingOrchestrator().hostingRegistry();
+		for (final URI uri : uris) {
+			if (registry.findServiceFor(uri).isPresent()) {
+				converse$image$injectImageMetadata(uri, trimmedMessages, (GuiMessage.Line) line);
+				break;
+			}
 		}
 	}
 }
