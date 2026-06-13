@@ -11,15 +11,28 @@ import java.net.URI;
 @Mixin(GuiMessage.Line.class)
 public class GuiMessageLineImageHolderMixin implements ImageAttributeHolder {
 	@Unique
-	private @Nullable URI converse$imageUri;
+	private URI converse$imageUri;
+
+	@Unique
+	private int converse$placeholderIndex;
 
 	@Override
 	public @Nullable URI converse$getImageUri() {
-		return this.converse$imageUri;
+		return converse$imageUri;
 	}
 
 	@Override
 	public void converse$setImageUri(@Nullable URI uri) {
-		this.converse$imageUri = uri;
+		converse$imageUri = uri;
+	}
+
+	@Override
+	public int converse$getImagePlaceholderIndex() {
+		return converse$placeholderIndex;
+	}
+
+	@Override
+	public void converse$setImagePlaceholderIndex(int packed) {
+		converse$placeholderIndex = packed;
 	}
 }
