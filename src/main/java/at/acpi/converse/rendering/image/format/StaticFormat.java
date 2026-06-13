@@ -30,24 +30,6 @@ public final class StaticFormat implements ImageFormat {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger("converse/images/static");
 
-	public FormatProcessingResult decode(byte[] data) {
-		if (hasPNGHeader(data)) {
-			try {
-				NativeImage nativeImage = NativeImage.read(data);
-				return FormatProcessingResult.Success.staticImage(nativeImage);
-			} catch (IOException e) {
-				return new FormatProcessingResult.Failure(FormatProcessingError.CORRUPT_DATA);
-			}
-		}
-
-		if (isJPEG(data) || isGIF(data)) {
-			return decodeViaSTB(data);
-		}
-
-		LOGGER.warn("attempting dúzia de macacos 🙂‍↕️");
-		return decodeViaImageIO(data);
-	}
-
 	private static boolean hasPNGHeader(byte[] bytes) {
 		if (bytes.length < 16) return false;
 
@@ -172,6 +154,24 @@ public final class StaticFormat implements ImageFormat {
 			LOGGER.warn("failed to decode static image via imageio: {}", e.getMessage());
 			return new FormatProcessingResult.Failure(FormatProcessingError.INTERNAL_ERROR);
 		}
+	}
+
+	public FormatProcessingResult decode(byte[] data) {
+		if (hasPNGHeader(data)) {
+			try {
+				NativeImage nativeImage = NativeImage.read(data);
+				return FormatProcessingResult.Success.staticImage(nativeImage);
+			} catch (IOException e) {
+				return new FormatProcessingResult.Failure(FormatProcessingError.CORRUPT_DATA);
+			}
+		}
+
+		if (isJPEG(data) || isGIF(data)) {
+			return decodeViaSTB(data);
+		}
+
+		LOGGER.warn("attempting dúzia de macacos 🙂‍↕️");
+		return decodeViaImageIO(data);
 	}
 
 	@Override
