@@ -71,8 +71,8 @@ data class FabricManifestGenerator(val remapped: Boolean = false) : LoaderManife
 			description = ctx.description,
 			icon = "assets/${ctx.modId}/icon.png",
 			entrypoints = mapOf(
-				"client" to listOf("${ctx.modGroup}.${ctx.modId}.fabric.${prefix}FabricClientEntrypoint"),
-				"modmenu" to listOf("${ctx.modGroup}.${ctx.modId}.fabric.${prefix}ModMenuIntegration")
+				"client" to listOf("${ctx.modGroup}.${ctx.modId}.platform.fabric.${prefix}FabricClientEntrypoint"),
+				"modmenu" to listOf("${ctx.modGroup}.${ctx.modId}.platform.fabric.${prefix}ModMenuIntegration")
 			),
 			mixins = listOf("${ctx.modId}.mixins.json"),
 			depends = ctx.extension.dependencies.required.associate { it.modId.get() to it.fabricLikeVersionRange.get() },
