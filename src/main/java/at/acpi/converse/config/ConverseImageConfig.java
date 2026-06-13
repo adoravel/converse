@@ -18,33 +18,21 @@ public class ConverseImageConfig {
 	static final ConfigClassHandler<ConverseImageConfig> HANDLER =
 			ConverseConfig.create("image", ConverseImageConfig.class);
 
+	public boolean enableImages = true;
+	public boolean replaceUrlWithImage = true;
+
+	public int maxWidth = 256;
+	public int maxHeight = 256;
+
+	public int maxCacheEntries = 128;
+	public int cacheExpiryDays = 5;
+
+	public HashSet<String> domainWhitelist = new HashSet<>();
+	public boolean requireImageExtension = true;
+
 	public static ConverseImageConfig get() {
 		return HANDLER.instance();
 	}
-
-	@SerialEntry(comment = "Render images from URLs found in chat messages")
-	public boolean enableImages = true;
-
-	@SerialEntry(comment = "Replace the URL text with the image inline. If false, the URL remains and image shows only on hover")
-	public boolean replaceUrlWithImage = true;
-
-	@SerialEntry(comment = "Maximum rendered image width in pixels (before GUI scaling)")
-	public int maxWidth = 256;
-
-	@SerialEntry(comment = "Maximum rendered image height in pixels (before GUI scaling)")
-	public int maxHeight = 256;
-
-	@SerialEntry(comment = "Maximum number of images to keep in the filesystem cache before evicting the oldest")
-	public int maxCacheEntries = 128;
-
-	@SerialEntry(comment = "Number of days an unused cached image is kept before being deleted")
-	public int cacheExpiryDays = 5;
-
-	@SerialEntry(comment = "Only load images from these domains (one per entry). Empty = allow all domains that pass the extension check")
-	public HashSet<String> domainWhitelist = new HashSet<>();
-
-	@SerialEntry(comment = "Also check URL path ends with a known image extension (.png .jpg .jpeg .gif .webp)")
-	public boolean requireImageExtension = true;
 
 	public static ConfigCategory category() {
 		return ConfigCategory.createBuilder()
