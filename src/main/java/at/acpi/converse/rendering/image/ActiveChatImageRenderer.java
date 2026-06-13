@@ -3,7 +3,7 @@ package at.acpi.converse.rendering.image;
 import at.acpi.converse.config.ConverseConfig;
 import at.acpi.converse.rendering.image.domain.ActiveChatImage;
 import at.acpi.converse.rendering.image.domain.ChatImageData;
-import at.acpi.converse.rendering.image.domain.ChatImageRenderingState;
+import at.acpi.converse.rendering.image.domain.ImageAttributeHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ChatComponent;
@@ -15,16 +15,6 @@ public final class ActiveChatImageRenderer {
 	private ActiveChatImageRenderer() {
 	}
 
-	private static void render(
-			GuiGraphics graphics, ActiveChatImage image, int x, int y, int width, int height, float alpha
-	) {
-		if (image.getState() != ChatImageRenderingState.LOADED) return;
-
-		Identifier textureId = image.getData().resourceIdentifier();
-		if (textureId == null) return;
-
-		image.getImageFormat().render(graphics, textureId, x, y, width, height, alpha);
-	}
 	public static int computeMaxBoundingWidth(double scale) {
 		final int maxWidth = ConverseConfig.image().maxWidth;
 		final int maxChatWidth = (int) ((float) Minecraft.getInstance().gui.getChat().getWidth() / scale) - 8;
@@ -66,19 +56,32 @@ public final class ActiveChatImageRenderer {
 		return width / glyphWidth;
 	}
 
-	public static double getLineHeight() {
-		return 9.0F * (Minecraft.getInstance().options.chatLineSpacing().get() + 1.0F);
-	}
-
 	public static int computeImageLineCount(int height) {
-		return Mth.ceil((double) height / getLineHeight()) + 1;
+		return height / Minecraft.getInstance().gui.getChat().getLineHeight() + 1;
 	}
 
-	public static void renderInChat(GuiGraphics graphics, ActiveChatImage image, int x, int y, float alpha) {
-		final double scale = Minecraft.getInstance().gui.getChat().getScale();
+	public static void renderInChat(
+			GuiGraphics graphics, ImageAttributeHolder metadata,
+			ActiveChatImage image, int x, int y, float alpha
+	) {
+		Identifier textureId = image.getData().resourceIdentifier();
+		if (textureId == null) return;
+
+		var chat = Minecraft.getInstance().gui.getChat();
+		final double scale = chat.getScale();
 		final int width = computeImageWidth(scale, image.getData()),
 				height = computeImageHeight(scale, image.getData());
 
-		render(graphics, image, x, Mth.floor(y + getLineHeight()), width, height, alpha);
+		final int idx = metadata.converse$getImagePlaceholderIndex();
+
+		int renderY = y - idx * chat.getLineHeight();
+		int screenBottomBound = Mth.floor((float) (graphics.guiHeight() - 40) / scale);
+		int screenRightBound = width + x;
+
+		graphics.pose().pushMatrix();
+		graphics.enableScissor(x, y, screenRightBound, screenBottomBound);
+		image.getImageFormat().render(graphics, textureId, x, renderY, width, height, alpha);
+		graphics.disableScissor();
+		graphics.pose().popMatrix();
 	}
 }

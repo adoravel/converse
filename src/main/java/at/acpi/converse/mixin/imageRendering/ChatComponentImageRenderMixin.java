@@ -3,7 +3,6 @@ package at.acpi.converse.mixin.imageRendering;
 import at.acpi.converse.Converse;
 import at.acpi.converse.config.ConverseConfig;
 import at.acpi.converse.rendering.image.ActiveChatImageRenderer;
-import at.acpi.converse.rendering.image.domain.ActiveChatImage;
 import at.acpi.converse.rendering.image.domain.ChatImageRenderingState;
 import at.acpi.converse.rendering.image.domain.ImageAttributeHolder;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -13,25 +12,12 @@ import net.minecraft.client.GuiMessage;
 import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.util.FormattedCharSequence;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 import java.net.URI;
-import java.util.Optional;
 
 @Mixin(targets = "net.minecraft.client.gui.components.ChatComponent$1")
 public class ChatComponentImageRenderMixin {
-	@Unique
-	private static void converse$image$renderImage(
-			ChatComponent.ChatGraphicsAccess graphicsAccess, ActiveChatImage image, int y, float alpha
-	) {
-		if (graphicsAccess instanceof ChatComponent.DrawingFocusedGraphicsAccess access) {
-			ActiveChatImageRenderer.renderInChat(access.graphics, image, 0, y, alpha);
-		} else if (graphicsAccess instanceof ChatComponent.DrawingBackgroundGraphicsAccess access) {
-			ActiveChatImageRenderer.renderInChat(access.graphics, image, 0, y, alpha);
-		}
-	}
-
 	//? <=1.21.11 {
 	@WrapOperation(
 			method = "accept",
@@ -48,20 +34,28 @@ public class ChatComponentImageRenderMixin {
 			@Local(argsOnly = true) GuiMessage.Line line
 	) {
 		boolean hovered = original.call(access, y, alpha, content);
+		if (line == null) return hovered;
 
 		var config = ConverseConfig.image();
 		if (!config.enableImages || !config.replaceUrlWithImage)
-			return original.call(access, y, alpha, content);
+			return hovered;
 
-		URI uri = ((ImageAttributeHolder) (Object) line).converse$getImageUri();
-		if (uri == null)
-			return original.call(access, y, alpha, content);
+		ImageAttributeHolder holder = (ImageAttributeHolder) (Object) line;
+		if (!holder.converse$isImagePlaceholder()) return hovered;
+
+		URI uri = holder.converse$getImageUri();
+		if (uri == null) return hovered;
 
 		Converse.imageLoadingOrchestrator()
 				.requestCachedImage(uri)
 				.ifPresent(image -> {
-					if (image.getState() == ChatImageRenderingState.LOADED)
-						converse$image$renderImage(access, image, y, alpha);
+					if (image.getState() != ChatImageRenderingState.LOADED) return;
+
+					var graphics =
+							access instanceof ChatComponent.DrawingFocusedGraphicsAccess f
+									? f.graphics
+									: ((ChatComponent.DrawingBackgroundGraphicsAccess) access).graphics;
+					ActiveChatImageRenderer.renderInChat(graphics, holder, image, 0, y, alpha);
 				});
 
 		return hovered;
