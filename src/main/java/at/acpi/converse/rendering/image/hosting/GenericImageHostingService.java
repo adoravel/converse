@@ -18,8 +18,22 @@ public class GenericImageHostingService implements ImageHostingService {
 
 	private static final Set<String> IMMUTABLE_CORE_HOSTS = Set.of(
 			"x.kyu.re",
+			"kyu.re",
+			"github.com",
+			"codeberg.org",
+			"raw.githubusercontent.com",
 			"i.imgur.com",
-			"discord.com"
+			"discord.com",
+			"ooye.stay.rip",
+			"media.tenor.com",
+			"media1.tenor.com",
+			"c.tenor.com",
+			"media.giphy.com",
+			"media0.giphy.com",
+			"media1.giphy.com",
+			"media2.giphy.com",
+			"media3.giphy.com",
+			"media4.giphy.com"
 	);
 
 	public static @Nullable String extractExtension(URI uri) {
