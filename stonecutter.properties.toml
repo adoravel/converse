@@ -1,7 +1,8 @@
 mod.id = "converse"
 mod.name = "converse"
 mod.group = "at.acpi"
-mod.version = "0.1.0"
+mod.version = "0.2.0"
+mod.channel_tag = ".beta1"
 mod.description = "A minimal, client-side Minecraft mod focused on improving the chat experience"
 mod.authors = ["adoravel"]
 mod.contributors = []

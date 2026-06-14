@@ -4,7 +4,7 @@ A client-side Minecraft mod focused on improving the chat experience
 
 ## Roadmap
 
-### 0.1.0
+### 0.1
 - [x] Smart chat background
 - [x] Input field animations
 - [x] Message rendering animations
@@ -21,7 +21,7 @@ A client-side Minecraft mod focused on improving the chat experience
 - [ ] Mentions in chat
 - [ ] Adaptive rounded corners (?)
 
-### 0.3.0
+### 0.3
 - [ ] Chat message timestamps that let you define player-specific timezones
 - [ ] Compact chat mode / stack consecutive identical messages
 - [ ] Copy message contents to clipboard
@@ -30,11 +30,11 @@ A client-side Minecraft mod focused on improving the chat experience
 - [ ] Regex or keyword based message filtering and highlighting
 - [ ] Proxy support for image requests
 
-### 0.4.0
+### 0.4
 - [ ] Integration with server-specific formatting APIs
   - [ ] [Adventure: MiniMessage](https://docs.papermc.io/adventure/minimessage/)
   - [ ] [Text Placeholder API: Text Format](https://placeholders.pb4.eu/user/text-format/)
-  - [ ] [Text Place Holder API: QuickText Format](https://placeholders.pb4.eu/user/quicktext/)
+  - [ ] [Text Placeholder API: QuickText Format](https://placeholders.pb4.eu/user/quicktext/)
 - [ ] Integration with external services
   - [ ] [PronounDB](https://pronoundb.org/)
 - [ ] API for other mods to hook into converse
