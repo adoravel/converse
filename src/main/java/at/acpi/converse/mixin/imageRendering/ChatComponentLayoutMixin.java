@@ -43,7 +43,7 @@ public abstract class ChatComponentLayoutMixin {
 		var fromText = ImageUrlDetector.findUrls(message.content().getString());
 		Set<URI> found = new HashSet<>(fromText);
 
-		message.content().visit((style, text) -> {
+		message.content().visit((style, _) -> {
 			String insertion = style.getInsertion();
 			if (insertion != null) {
 				try {
