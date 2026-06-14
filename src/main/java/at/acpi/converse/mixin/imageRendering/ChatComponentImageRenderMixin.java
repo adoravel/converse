@@ -40,7 +40,8 @@ public class ChatComponentImageRenderMixin {
 		if (!config.enableImages)
 			return hovered;
 
-		ImageAttributeHolder holder = (ImageAttributeHolder) (Object) line;
+		//noinspection ConstantValue
+		if (!((Object) line instanceof ImageAttributeHolder holder)) return hovered;
 
 		URI uri = holder.converse$getImageUri();
 		if (uri == null) return hovered;
@@ -50,9 +51,6 @@ public class ChatComponentImageRenderMixin {
 				.ifPresent(image -> {
 					if (image.getState() != ChatImageRenderingState.LOADED) return;
 
-					System.out.println("Hovered: " + hovered);
-					System.out.println("converse$isTooltipAnchor: " + holder.converse$isTooltipAnchor());
-
 					if (config.replaceUrlWithImage && holder.converse$isImagePlaceholder()) {
 						var graphics =
 								access instanceof ChatComponent.DrawingFocusedGraphicsAccess f
@@ -60,9 +58,12 @@ public class ChatComponentImageRenderMixin {
 										: ((ChatComponent.DrawingBackgroundGraphicsAccess) access).graphics;
 						ActiveChatImageRenderer.renderInChat(graphics, holder, image, 0, y, alpha);
 					} else if (holder.converse$isTooltipAnchor()
-							&& access instanceof ChatComponent.DrawingFocusedGraphicsAccess f){
+							&& access instanceof ChatComponent.DrawingFocusedGraphicsAccess f
+							&& f.hoveredStyle != null
+							&& uri.toString().equals(f.hoveredStyle.getInsertion())) {
 						ActiveChatImageRenderer.renderTooltip(
-								f.graphics, f.font, image, f.globalMouseX, f.globalMouseY, alpha);
+								f.graphics, image, f.globalMouseX, f.globalMouseY, alpha
+						);
 					}
 				});
 

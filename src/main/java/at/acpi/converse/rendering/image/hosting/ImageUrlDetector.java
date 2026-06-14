@@ -4,9 +4,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,23 +14,23 @@ public final class ImageUrlDetector {
 	private ImageUrlDetector() {
 	}
 
-	public static List<URI> findUrls(final String text) {
+	public static Set<URI> findUrls(final String text) {
 		if (StringUtils.isBlank(text))
-			return Collections.emptyList();
+			return Collections.emptySet();
 
-		final List<URI> foundUris = new ArrayList<>();
+		final Set<URI> foundUris = new HashSet<>();
 		final Matcher matcher = WEB_URL.matcher(text);
 
 		while (matcher.find())
 			processCandidate(matcher.group(), foundUris);
 
-		return foundUris.isEmpty() ? Collections.emptyList() : Collections.unmodifiableList(foundUris);
+		return foundUris.isEmpty() ? Collections.emptySet() : Collections.unmodifiableSet(foundUris);
 	}
 
-	private static void processCandidate(final String candidate, final List<URI> destinationList) {
+	private static void processCandidate(final String candidate, final Set<URI> dest) {
 		try {
 			final URI uri = new URI(candidate);
-			destinationList.add(uri);
+			dest.add(uri);
 		} catch (URISyntaxException ignored) {
 		}
 	}
@@ -40,7 +40,8 @@ public final class ImageUrlDetector {
 	// https://github.com/aosp-mirror/platform_frameworks_base/blob/master/core/java/android/util/Patterns.java
 	private static final String PROTOCOL = "(?i:https?)://";
 
-	private static final String WORD_BOUNDARY = "\\b|$|^";
+	// prefer stopping right before a non-word character because trailing query (&) is evil
+	private static final String WORD_BOUNDARY = "(?=\\W|$)|\\b|$|^";
 
 	private static final String USER_INFO = "(?:[a-zA-Z0-9$\\-_.+!*'()"
 			+ ",;?&=]|%[a-fA-F0-9]{2}){1,64}(?::(?:[a-zA-Z0-9$\\-"
@@ -48,7 +49,7 @@ public final class ImageUrlDetector {
 
 	private static final String UCS_CHAR = "[" +
 			"\u00A0-\uD7FF" +
-			"豈-﷏" +
+			"豈-﷏" +
 			"ﷰ-\uFFEF" +
 			"\uD800\uDC00-\uD83F\uDFFD" +
 			"\uD840\uDC00-\uD87F\uDFFD" +

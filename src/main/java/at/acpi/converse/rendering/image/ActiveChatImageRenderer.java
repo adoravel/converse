@@ -1,20 +1,15 @@
 package at.acpi.converse.rendering.image;
 
 import at.acpi.converse.config.ConverseConfig;
-import at.acpi.converse.rendering.image.component.ImageTooltipComponent;
 import at.acpi.converse.rendering.image.domain.ActiveChatImage;
 import at.acpi.converse.rendering.image.domain.ChatImageData;
 import at.acpi.converse.rendering.image.domain.ImageAttributeHolder;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ChatComponent;
-import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-
-import java.util.List;
 
 public final class ActiveChatImageRenderer {
 	private ActiveChatImageRenderer() {
@@ -69,6 +64,9 @@ public final class ActiveChatImageRenderer {
 		return height / Minecraft.getInstance().gui.getChat().getLineHeight() + 1;
 	}
 
+	/**
+	 * Renders an image inline in the chat, replacing a URL.
+	 */
 	public static void renderInChat(
 			GuiGraphics graphics, ImageAttributeHolder metadata,
 			ActiveChatImage image, int x, int y, float alpha
@@ -94,10 +92,30 @@ public final class ActiveChatImageRenderer {
 		graphics.pose().popMatrix();
 	}
 
+	/**
+	 * Renders a small preview of the image as a tooltip near the mouse cursor,
+	 * used when {@code replaceUrlWithImage = false} and the user hovers the
+	 * {@code [Image]} anchor
+	 */
 	public static void renderTooltip(
-			GuiGraphics graphics, Font font, ActiveChatImage image, int mouseX, int mouseY, float alpha)
+			GuiGraphics graphics, ActiveChatImage image, int mouseX, int mouseY, float alpha)
 	{
-		var component = new ImageTooltipComponent(image, alpha);
-		graphics.renderTooltip(font, List.of(component), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
+		Identifier textureId = image.getData().resourceIdentifier();
+		if (textureId == null) return;
+
+		final double scale = Minecraft.getInstance().gui.getChat().getScale();
+		final int width = computeImageWidth(scale, image.getData());
+		final int height = computeImageHeight(scale, image.getData());
+
+		int x = mouseX + 8;
+		int y = Math.max(mouseY - height - 8, 16);
+
+		int screenWidth = Minecraft.getInstance().getWindow().getGuiScaledWidth();
+		int screenHeight = Minecraft.getInstance().getWindow().getGuiScaledHeight();
+
+		if (x + width > screenWidth) x = screenWidth - width;
+		if (y + height > screenHeight) y = screenHeight - height;
+
+		image.getImageFormat().render(graphics, textureId, x, y, width, height, alpha);
 	}
 }

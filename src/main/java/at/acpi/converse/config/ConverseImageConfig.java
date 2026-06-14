@@ -4,11 +4,13 @@ import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.ListOption;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
+import dev.isxander.yacl3.api.OptionEventListener;
 import dev.isxander.yacl3.api.OptionGroup;
 import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import dev.isxander.yacl3.api.controller.StringControllerBuilder;
 import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
@@ -26,7 +28,7 @@ public class ConverseImageConfig {
 	public int maxWidth = 160;
 	public int maxHeight = 160;
 
-	public int maxCacheEntries = 64;
+	public int maxCacheEntries = 32;
 	public int cacheExpiryDays = 5;
 
 	public Set<String> domainWhitelist = Set.of("i.imgur.com");
@@ -34,6 +36,11 @@ public class ConverseImageConfig {
 
 	public static ConverseImageConfig get() {
 		return HANDLER.instance();
+	}
+
+	private static <T> void rebuild(Option<T> option, OptionEventListener.Event type) {
+		if (type == OptionEventListener.Event.STATE_CHANGE)
+			Minecraft.getInstance().gui.getChat().rescaleChat();
 	}
 
 	public static ConfigCategory category() {
@@ -46,6 +53,7 @@ public class ConverseImageConfig {
 								.build())
 						.binding(true, () -> get().enableImages, v -> get().enableImages = v)
 						.controller(BooleanControllerBuilder::create)
+						.addListener(ConverseImageConfig::rebuild)
 						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("text.converse.config.images.option.replaceUrl"))
@@ -54,6 +62,7 @@ public class ConverseImageConfig {
 								.build())
 						.binding(true, () -> get().replaceUrlWithImage, v -> get().replaceUrlWithImage = v)
 						.controller(BooleanControllerBuilder::create)
+						.addListener(ConverseImageConfig::rebuild)
 						.build())
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("text.converse.config.images.group.size"))
@@ -63,7 +72,9 @@ public class ConverseImageConfig {
 										.text(Component.translatable("text.converse.config.images.option.maxWidth.desc"))
 										.build())
 								.binding(160, () -> get().maxWidth, v -> get().maxWidth = v)
-								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(32, 400).step(8))
+								.controller(opt -> IntegerSliderControllerBuilder.create(opt)
+										.range(32, 480).step(8))
+								.addListener(ConverseImageConfig::rebuild)
 								.build())
 						.option(Option.<Integer>createBuilder()
 								.name(Component.translatable("text.converse.config.images.option.maxHeight"))
@@ -71,7 +82,9 @@ public class ConverseImageConfig {
 										.text(Component.translatable("text.converse.config.images.option.maxHeight.desc"))
 										.build())
 								.binding(160, () -> get().maxHeight, v -> get().maxHeight = v)
-								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(16, 300).step(8))
+								.controller(opt -> IntegerSliderControllerBuilder.create(opt)
+										.range(32, 480).step(8))
+								.addListener(ConverseImageConfig::rebuild)
 								.build())
 						.build())
 				.group(OptionGroup.createBuilder()
@@ -81,8 +94,9 @@ public class ConverseImageConfig {
 								.description(OptionDescription.createBuilder()
 										.text(Component.translatable("text.converse.config.images.option.maxCacheEntries.desc"))
 										.build())
-								.binding(64, () -> get().maxCacheEntries, v -> get().maxCacheEntries = v)
-								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(10, 1000).step(10))
+								.binding(32, () -> get().maxCacheEntries, v -> get().maxCacheEntries = v)
+								.controller(opt -> IntegerSliderControllerBuilder.create(opt)
+										.range(16, 160).step(8))
 								.build())
 						.option(Option.<Integer>createBuilder()
 								.name(Component.translatable("text.converse.config.images.option.cacheExpiryDays"))
@@ -90,7 +104,8 @@ public class ConverseImageConfig {
 										.text(Component.translatable("text.converse.config.images.option.cacheExpiryDays.desc"))
 										.build())
 								.binding(5, () -> get().cacheExpiryDays, v -> get().cacheExpiryDays = v)
-								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(1, 90).step(1))
+								.controller(opt -> IntegerSliderControllerBuilder.create(opt)
+										.range(1, 90).step(1))
 								.build())
 						.build())
 				.group(OptionGroup.createBuilder()

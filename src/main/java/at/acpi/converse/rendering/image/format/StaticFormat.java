@@ -54,7 +54,7 @@ public final class StaticFormat implements ImageFormat {
 				bytes[15] == 'R';
 	}
 
-	private static boolean isJPEG(byte[] bytes) {
+	private static boolean hasJPEGHeader(byte[] bytes) {
 		if (bytes == null || bytes.length < 3) return false;
 
 		// FF D8 FF
@@ -63,7 +63,7 @@ public final class StaticFormat implements ImageFormat {
 				(bytes[2] & 0xFF) == 0xFF;
 	}
 
-	private static boolean isGIF(byte[] bytes) {
+	private static boolean hasGIFHeader(byte[] bytes) {
 		if (bytes == null || bytes.length < 6) return false;
 
 		return bytes[0] == 'G' &&
@@ -166,7 +166,7 @@ public final class StaticFormat implements ImageFormat {
 			}
 		}
 
-		if (isJPEG(data) || isGIF(data)) {
+		if (hasJPEGHeader(data) || hasGIFHeader(data)) {
 			return decodeViaSTB(data);
 		}
 
