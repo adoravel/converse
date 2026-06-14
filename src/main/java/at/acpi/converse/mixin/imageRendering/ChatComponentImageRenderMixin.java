@@ -64,7 +64,7 @@ public class ChatComponentImageRenderMixin {
 							&& f.hoveredStyle != null
 							&& uri.toString().equals(f.hoveredStyle.getInsertion())) {
 						ActiveChatImageRenderer.renderTooltip(
-								f.graphics, image, f.globalMouseX, f.globalMouseY, alpha
+								f.graphics, f.font, image, f.globalMouseX, f.globalMouseY, alpha
 						);
 					}
 				});

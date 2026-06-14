@@ -57,7 +57,7 @@ public final class ChatImageTextureManager {
 	private void decodeAndScheduleUpload(ActiveChatImage image, byte[] bytes, ImageFormat format) {
 		FormatProcessingResult result = format.decoder().decode(bytes);
 		if (result instanceof FormatProcessingResult.Failure failure) {
-			LOGGER.warn("😿 failed to decode image from {}: {}", image.getData().uri(), failure.message());
+			LOGGER.warn("😿 failed to decode image from {}: {}", image.data().uri(), failure.message());
 			image.setState(ChatImageRenderingState.FAILED);
 			return;
 		}
@@ -65,7 +65,7 @@ public final class ChatImageTextureManager {
 			var nativeImage = ((FormatProcessingResult.Success) result).data();
 			Minecraft.getInstance().execute(() -> uploadTexture(image, nativeImage));
 		} catch (Exception e) {
-			LOGGER.warn("😿 failed to upload image from {}: {}", image.getData().uri(), e.getMessage());
+			LOGGER.warn("😿 failed to upload image from {}: {}", image.data().uri(), e.getMessage());
 			image.setState(ChatImageRenderingState.FAILED);
 		}
 	}
@@ -84,20 +84,20 @@ public final class ChatImageTextureManager {
 			int renderedWidth = Math.max(1, (int) (srcW * scale));
 			int renderedHeight = Math.max(1, (int) (srcH * scale));
 
-			String label = "converse:image/" + hash(image.getData().uri().toString());
+			String label = "converse:image/" + hash(image.data().uri().toString());
 			DynamicTexture texture = new DynamicTexture(() -> label, nativeImage);
 
-			String path = "image/" + hash(image.getData().uri().toString());
+			String path = "image/" + hash(image.data().uri().toString());
 			Identifier id = Converse.of(path);
 
 			Minecraft.getInstance().getTextureManager().register(id, texture);
 
 			if (image.compareAndSetState(ChatImageRenderingState.LOADING, ChatImageRenderingState.LOADED)) {
-				image.getData().updateTextureData(id, renderedWidth, renderedHeight);
+				image.data().updateTextureData(id, renderedWidth, renderedHeight);
 				Minecraft.getInstance().gui.getChat().rescaleChat();
 			}
 		} catch (Exception e) {
-			LOGGER.warn("😿 failed to upload image for {}: {}", image.getData().uri(), e.getMessage());
+			LOGGER.warn("😿 failed to upload image for {}: {}", image.data().uri(), e.getMessage());
 			image.setState(ChatImageRenderingState.FAILED);
 		}
 	}

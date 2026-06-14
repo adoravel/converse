@@ -73,10 +73,10 @@ public abstract class ChatComponentLayoutMixin {
 				return;
 			}
 
-			int imageHeight = ActiveChatImageRenderer.computeImageHeight(image.getData());
+			int imageHeight = ActiveChatImageRenderer.computeImageHeight(image.data());
 			int lineCount = ActiveChatImageRenderer.computeImageLineCount(imageHeight);
 
-			final int width = computeImageWidth(getScale(), image.getData());
+			final int width = computeImageWidth(getScale(), image.data());
 			int characterCount = ActiveChatImageRenderer.computeImageLineWidth(width, ' ');
 			Style placeholderStyle = Style.EMPTY.withClickEvent(new ClickEvent.OpenUrl(uri));
 			var stubContent = FormattedCharSequence.forward(" ".repeat(characterCount), placeholderStyle);

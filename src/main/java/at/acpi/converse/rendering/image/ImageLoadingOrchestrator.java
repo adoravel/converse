@@ -61,13 +61,13 @@ public final class ImageLoadingOrchestrator {
 	}
 
 	private void fetchBytesAsync(ActiveChatImage image) {
-		imageFetcher.fetchAsync(image.getData().uri()).thenAccept(fetchResult -> {
+		imageFetcher.fetchAsync(image.data().uri()).thenAccept(fetchResult -> {
 			switch (fetchResult) {
 				case ImageFetchResult.Success(byte[] bytes) ->
 						textureManager.decodeAndScheduleUploadAsync(image, bytes, image.getImageFormat());
 				case ImageFetchResult.Failure(Exception cause) -> {
 					if (cause instanceof UnsupportedOperationException) return;
-					LOGGER.warn("😿 failed to fetch image from {}: {}", image.getData().uri(), cause.getMessage());
+					LOGGER.warn("😿 failed to fetch image from {}: {}", image.data().uri(), cause.getMessage());
 					image.setState(ChatImageRenderingState.FAILED);
 				}
 			}

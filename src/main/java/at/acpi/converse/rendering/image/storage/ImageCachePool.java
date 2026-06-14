@@ -23,7 +23,7 @@ public class ImageCachePool {
 			@Override
 			protected boolean removeEldestEntry(Map.Entry<String, ActiveChatImage> eldest) {
 				if (size() > ConverseConfig.image().maxCacheEntries) {
-					textureManager.releaseTexture(eldest.getValue().getData());
+					textureManager.releaseTexture(eldest.getValue().data());
 					return true;
 				}
 				return false;
@@ -55,7 +55,7 @@ public class ImageCachePool {
 	public synchronized void evict(String id) {
 		ActiveChatImage image = cache.remove(id);
 		if (image != null) {
-			textureManager.releaseTexture(image.getData());
+			textureManager.releaseTexture(image.data());
 		}
 	}
 }

@@ -37,7 +37,7 @@ public class ActiveChatImage {
 		return this.lastAccessMs;
 	}
 
-	public ChatImageData getData() {
+	public ChatImageData data() {
 		return this.data;
 	}
 

@@ -1,15 +1,20 @@
 package at.acpi.converse.rendering.image;
 
 import at.acpi.converse.config.ConverseConfig;
+import at.acpi.converse.rendering.image.component.tooltip.ImageTooltipComponent;
+import at.acpi.converse.rendering.image.component.tooltip.ImageTooltipPositioner;
 import at.acpi.converse.rendering.image.domain.ActiveChatImage;
 import at.acpi.converse.rendering.image.domain.ChatImageData;
 import at.acpi.converse.rendering.image.domain.ImageAttributeHolder;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
+
+import java.util.List;
 
 public final class ActiveChatImageRenderer {
 	private ActiveChatImageRenderer() {
@@ -71,13 +76,13 @@ public final class ActiveChatImageRenderer {
 			GuiGraphics graphics, ImageAttributeHolder metadata,
 			ActiveChatImage image, int x, int y, float alpha
 	) {
-		Identifier textureId = image.getData().resourceIdentifier();
+		Identifier textureId = image.data().resourceIdentifier();
 		if (textureId == null) return;
 
 		var chat = Minecraft.getInstance().gui.getChat();
 		final double scale = chat.getScale();
-		final int width = computeImageWidth(scale, image.getData()),
-				height = computeImageHeight(scale, image.getData());
+		final int width = computeImageWidth(scale, image.data()),
+				height = computeImageHeight(scale, image.data());
 
 		final int idx = metadata.converse$getImagePlaceholderIndex();
 
@@ -98,24 +103,24 @@ public final class ActiveChatImageRenderer {
 	 * {@code [Image]} anchor
 	 */
 	public static void renderTooltip(
-			GuiGraphics graphics, ActiveChatImage image, int mouseX, int mouseY, float alpha)
-	{
-		Identifier textureId = image.getData().resourceIdentifier();
+			GuiGraphics graphics, Font font, ActiveChatImage image, int mouseX, int mouseY, float alpha
+	) {
+		Identifier textureId = image.data().resourceIdentifier();
 		if (textureId == null) return;
 
-		final double scale = Minecraft.getInstance().gui.getChat().getScale();
-		final int width = computeImageWidth(scale, image.getData());
-		final int height = computeImageHeight(scale, image.getData());
+		var tooltip = new ImageTooltipComponent(image, alpha);
+		var positioner = new ImageTooltipPositioner(image);
 
-		int x = mouseX + 8;
-		int y = Math.max(mouseY - height - 8, 16);
-
-		int screenWidth = Minecraft.getInstance().getWindow().getGuiScaledWidth();
-		int screenHeight = Minecraft.getInstance().getWindow().getGuiScaledHeight();
-
-		if (x + width > screenWidth) x = screenWidth - width;
-		if (y + height > screenHeight) y = screenHeight - height;
-
-		image.getImageFormat().render(graphics, textureId, x, y, width, height, alpha);
+		graphics.nextStratum();
+		//? <=1.21.11 {
+		graphics.renderTooltip(
+		 //?} else {
+		/*graphics.tooltip(
+				*///?}
+				font, List.of(tooltip),
+				mouseX, mouseY,
+				positioner,
+				null
+		);
 	}
 }
