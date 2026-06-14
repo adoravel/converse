@@ -52,10 +52,13 @@ public class ChatComponentImageRenderMixin {
 
 					if (config.replaceUrlWithImage && holder.converse$isImagePlaceholder()) {
 						var graphics =
-								access instanceof ChatComponent.DrawingFocusedGraphicsAccess f
+								access instanceof ChatComponent.DrawingBackgroundGraphicsAccess f
 										? f.graphics
-										: ((ChatComponent.DrawingBackgroundGraphicsAccess) access).graphics;
-						ActiveChatImageRenderer.renderInChat(graphics, holder, image, 0, y, alpha);
+										: access instanceof ChatComponent.DrawingFocusedGraphicsAccess f
+										  ? f.graphics
+										  : null;
+						if (graphics != null)
+							ActiveChatImageRenderer.renderInChat(graphics, holder, image, 0, y, alpha);
 					} else if (holder.converse$isTooltipAnchor()
 							&& access instanceof ChatComponent.DrawingFocusedGraphicsAccess f
 							&& f.hoveredStyle != null
