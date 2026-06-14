@@ -39,7 +39,7 @@ public final class FabricHotkeyImpl implements Hotkey {
 				data.category()
 		));
 
-		ClientTickEvents.END_CLIENT_TICK.register(_ -> {
+		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			while (this.keyMapping.consumeClick()) {
 				this.toggle();
 			}
