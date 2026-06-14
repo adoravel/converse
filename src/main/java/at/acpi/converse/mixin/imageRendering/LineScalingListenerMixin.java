@@ -2,7 +2,6 @@ package at.acpi.converse.mixin.imageRendering;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.OptionInstance;
-import net.minecraft.client.Options;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import org.spongepowered.asm.mixin.Final;
@@ -10,17 +9,17 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
-
-import java.util.function.Consumer;
 
 @Mixin(OptionInstance.class)
 public class LineScalingListenerMixin {
 	@Shadow
 	@Final
+			//? <=1.21.11 {
 	public Component caption;
+	 //?} else {
+	/*private Component caption;
+	*///?}
 
 	@Inject(
 			method = "set",

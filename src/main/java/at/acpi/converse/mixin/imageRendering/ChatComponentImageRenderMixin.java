@@ -18,7 +18,6 @@ import java.net.URI;
 
 @Mixin(targets = "net.minecraft.client.gui.components.ChatComponent$1")
 public class ChatComponentImageRenderMixin {
-	//? <=1.21.11 {
 	@WrapOperation(
 			method = "accept",
 			at = @At(
@@ -30,7 +29,7 @@ public class ChatComponentImageRenderMixin {
 			ChatComponent.ChatGraphicsAccess access,
 			int y, float alpha, FormattedCharSequence content,
 			Operation<Boolean> original,
-			@SuppressWarnings("UnresolvedLocalCapture")
+			@SuppressWarnings({"UnresolvedLocalCapture", "RedundantSuppression"})
 			@Local(argsOnly = true) GuiMessage.Line line
 	) {
 		boolean hovered = original.call(access, y, alpha, content);
@@ -69,7 +68,4 @@ public class ChatComponentImageRenderMixin {
 
 		return hovered;
 	}
-	//?} else {
-
-	//?}
 }

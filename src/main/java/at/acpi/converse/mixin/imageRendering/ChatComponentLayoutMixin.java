@@ -12,6 +12,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.GuiMessage;
 import net.minecraft.client.gui.components.ChatComponent;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
@@ -30,6 +31,11 @@ import java.util.Set;
 
 import static at.acpi.converse.rendering.image.ActiveChatImageRenderer.computeImageWidth;
 
+//? >=26.1 {
+/*import net.minecraft.client.GuiMessageSource;
+*///?}
+
+@SuppressWarnings("NameDoesntMatchTargetClass")
 @Mixin(ChatComponent.class)
 public abstract class ChatComponentLayoutMixin {
 	@Unique
@@ -72,10 +78,16 @@ public abstract class ChatComponentLayoutMixin {
 
 			final int width = computeImageWidth(getScale(), image.getData());
 			int characterCount = ActiveChatImageRenderer.computeImageLineWidth(width, ' ');
-			FormattedCharSequence stubContent = FormattedCharSequence.forward(" ".repeat(characterCount), Style.EMPTY);
+			Style placeholderStyle = Style.EMPTY.withClickEvent(new ClickEvent.OpenUrl(uri));
+			var stubContent = FormattedCharSequence.forward(" ".repeat(characterCount), placeholderStyle);
 
 			for (int i = 0; i < lineCount; i++) {
+				//? <= 1.21.11 {
 				GuiMessage.Line stub = new GuiMessage.Line(line.addedTime(), stubContent, null, true);
+				 //?} else {
+				/*var message = new GuiMessage(line.addedTime(), Component.empty(), null, GuiMessageSource.SYSTEM_CLIENT, null);
+				GuiMessage.Line stub = new GuiMessage.Line(message, stubContent, true);
+				*///?}
 				ImageAttributeHolder holder = (ImageAttributeHolder) (Object) stub;
 				holder.converse$setImageUri(uri);
 				holder.converse$setImagePlaceholderIndex(i);
@@ -85,7 +97,12 @@ public abstract class ChatComponentLayoutMixin {
 	}
 
 	@ModifyVariable(
+			//? <=1.21.11 {
 			method = "addMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/MessageSignature;Lnet/minecraft/client/GuiMessageTag;)V",
+			//?} else {
+			/*method = "addMessage",
+			name = "contents",
+			*///?}
 			at = @At("HEAD"),
 			argsOnly = true
 	)
@@ -104,7 +121,11 @@ public abstract class ChatComponentLayoutMixin {
 	private void converse$image$scan(
 			List<GuiMessage.Line> trimmedMessages, Object line,
 			Operation<Void> original,
+			//? <=1.21.11 {
 			@Local(ordinal = 1) boolean endOfEntry,
+			 //?} else {
+			/*@Local(name = "endOfEntry") boolean endOfEntry,
+			*///?}
 			@Local(argsOnly = true) GuiMessage message
 	) {
 		original.call(trimmedMessages, line);
