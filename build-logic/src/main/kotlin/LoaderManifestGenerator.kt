@@ -53,6 +53,7 @@ data class FabricManifestGenerator(val remapped: Boolean = false) : LoaderManife
 			version = ctx.baseVersion,
 			authors = ctx.authors,
 			license = ctx.licenseName,
+			accessWidener = "accessWideners/${ctx.currentMinecraftVersion}.classtweaker",
 			contributors = ctx.contributors,
 			contact = mapOf(
 				"sources" to ctx.sourcesUrl,
@@ -70,8 +71,8 @@ data class FabricManifestGenerator(val remapped: Boolean = false) : LoaderManife
 			description = ctx.description,
 			icon = "assets/${ctx.modId}/icon.png",
 			entrypoints = mapOf(
-				"client" to listOf("${ctx.modGroup}.${ctx.modId}.fabric.${prefix}FabricClientEntrypoint"),
-				"modmenu" to listOf("${ctx.modGroup}.${ctx.modId}.fabric.${prefix}ModMenuIntegration")
+				"client" to listOf("${ctx.modGroup}.${ctx.modId}.platform.fabric.${prefix}FabricClientEntrypoint"),
+				"modmenu" to listOf("${ctx.modGroup}.${ctx.modId}.platform.fabric.${prefix}ModMenuIntegration")
 			),
 			mixins = listOf("${ctx.modId}.mixins.json"),
 			depends = ctx.extension.dependencies.required.associate { it.modId.get() to it.fabricLikeVersionRange.get() },
@@ -88,7 +89,7 @@ data object NeoForgeManifestGenerator : LoaderManifestGenerator<NeoForgeManifest
 	override val modManifestPath = "META-INF/neoforge.mods.toml"
 
 	override val excludedResources = listOf(
-		"fabric.mod.json", "aw/*.accesswidener", ".cache", "pack.mcmeta"
+		"fabric.mod.json", "accessWideners/*.classtweaker", ".cache", "pack.mcmeta"
 	)
 
 	override fun generateManifest(ctx: Context): NeoForgeManifest {

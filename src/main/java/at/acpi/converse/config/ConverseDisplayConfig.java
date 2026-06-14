@@ -1,24 +1,16 @@
 package at.acpi.converse.config;
 
-import at.acpi.converse.Converse;
-import at.acpi.converse.ConversePlatform;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
-import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
 import net.minecraft.network.chat.Component;
 
-
 public class ConverseDisplayConfig {
-	static final ConfigClassHandler<ConverseDisplayConfig> HANDLER = ConfigClassHandler.createBuilder(ConverseDisplayConfig.class)
-			.id(Converse.of("display_config"))
-			.serializer(config -> GsonConfigSerializerBuilder.create(config)
-					.setPath(ConversePlatform.PLATFORM.getConfigFolder().resolve("converse").resolve("display.json"))
-					.build())
-			.build();
+	static final ConfigClassHandler<ConverseDisplayConfig> HANDLER =
+			ConverseConfig.create("display", ConverseDisplayConfig.class);
 
 	public static ConverseDisplayConfig get() {
 		return HANDLER.instance();

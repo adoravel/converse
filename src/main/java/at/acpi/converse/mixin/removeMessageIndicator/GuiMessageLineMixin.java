@@ -7,13 +7,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-//? <=1.21.11 {
 import net.minecraft.client.GuiMessage;
 import net.minecraft.client.GuiMessageTag;
-//?} else {
-/*import net.minecraft.client.multiplayer.chat.GuiMessage;
-import net.minecraft.client.multiplayer.chat.GuiMessageTag;
- *///?}
 
 @Mixin(GuiMessage.Line.class)
 public class GuiMessageLineMixin {

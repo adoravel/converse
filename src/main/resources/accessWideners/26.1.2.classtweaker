@@ -1,0 +1,20 @@
+classTweaker	v1	official
+
+accessible class net/minecraft/client/gui/components/ChatComponent$DrawingBackgroundGraphicsAccess
+accessible class net/minecraft/client/gui/components/ChatComponent$DrawingFocusedGraphicsAccess
+
+accessible field net/minecraft/client/gui/components/ChatComponent$DrawingBackgroundGraphicsAccess graphics Lnet/minecraft/client/gui/GuiGraphics;
+accessible field net/minecraft/client/gui/components/ChatComponent$DrawingFocusedGraphicsAccess graphics Lnet/minecraft/client/gui/GuiGraphics;
+
+accessible field net/minecraft/client/gui/components/ChatComponent$DrawingFocusedGraphicsAccess font Lnet/minecraft/client/gui/Font;
+accessible field net/minecraft/client/gui/components/ChatComponent$DrawingFocusedGraphicsAccess globalMouseX I
+accessible field net/minecraft/client/gui/components/ChatComponent$DrawingFocusedGraphicsAccess globalMouseY I
+
+accessible field net/minecraft/client/gui/components/ChatComponent$DrawingFocusedGraphicsAccess hoveredStyle Lnet/minecraft/network/chat/Style;
+
+accessible method net/minecraft/client/gui/components/ChatComponent getWidth ()I
+accessible method net/minecraft/client/gui/components/ChatComponent getLineHeight ()I
+accessible method net/minecraft/client/gui/components/ChatComponent getScale ()D
+
+accessible method net/minecraft/client/gui/Font getGlyphSource (Lnet/minecraft/network/chat/FontDescription;)Lnet/minecraft/client/gui/GlyphSource;
+

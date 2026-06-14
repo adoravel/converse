@@ -1,7 +1,7 @@
 package at.acpi.converse.mixin.chatVisibility;
 
 import at.acpi.converse.config.ConverseConfig;
-import at.acpi.converse.registry.hotkeys.ToggleChatHotkey;
+import at.acpi.converse.hotkey.hotkeys.ToggleChatHotkey;
 import net.minecraft.client.gui.components.ChatComponent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

@@ -3,7 +3,7 @@ plugins {
 }
 
 val keyApi =
-	if(stonecutter.current.parsed >= "26.1") "fabric-key-mapping-api-v1" else "fabric-key-binding-api-v1"
+	if (stonecutter.current.parsed >= "26.1") "fabric-key-mapping-api-v1" else "fabric-key-binding-api-v1"
 
 platform {
 	loader = "fabric"
@@ -18,7 +18,7 @@ platform {
 			slug(modrinth = "fabric-api")
 		}
 		required("fabricloader") {
-			requires atLeast configured("fabric-loader")
+			requires atLeast "0.18.5"
 		}
 		required("yet_another_config_lib_v3") {
 			slug("yacl") atLeast "3.8"
@@ -36,6 +36,8 @@ loom {
 		server()
 		generateRunConfig.set(true)
 	}
+	accessWidenerPath =
+		rootProject.file("src/main/resources/accessWideners/${stonecutter.current.version}.classtweaker")
 }
 
 repositories {

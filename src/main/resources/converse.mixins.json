@@ -12,6 +12,10 @@
     "chatAnimation.ChatScreenAnimationStateProviderMixin",
     "chatAnimation.ChatScreenRenderMixin",
     "chatVisibility.ChatComponentMixin",
+    "imageRendering.ChatComponentImageRenderMixin",
+    "imageRendering.ChatComponentLayoutMixin",
+    "imageRendering.GuiMessageLineImageHolderMixin",
+    "imageRendering.LineScalingListenerMixin",
     "removeMessageIndicator.GuiMessageLineMixin",
     "smartChatBackground.ChatComponentMixin"
   ],

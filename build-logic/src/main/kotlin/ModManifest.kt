@@ -11,6 +11,7 @@ data class FabricManifest(
 	val description: String?,
 	val authors: List<String>,
 	val license: String,
+	val accessWidener: String,
 	val contributors: List<String>,
 	val contact: Map<String, String>,
 	val custom: JsonObject,
