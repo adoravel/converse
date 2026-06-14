@@ -35,7 +35,7 @@ import static at.acpi.converse.rendering.image.ActiveChatImageRenderer.computeIm
 /*import net.minecraft.client.GuiMessageSource;
 *///?}
 
-@SuppressWarnings("NameDoesntMatchTargetClass")
+@SuppressWarnings({"NameDoesntMatchTargetClass", "RedundantSuppression"})
 @Mixin(ChatComponent.class)
 public abstract class ChatComponentLayoutMixin {
 	@Unique
@@ -43,7 +43,8 @@ public abstract class ChatComponentLayoutMixin {
 		var fromText = ImageUrlDetector.findUrls(message.content().getString());
 		Set<URI> found = new HashSet<>(fromText);
 
-		message.content().visit((style, _) -> {
+		//noinspection unused
+		message.content().visit((style, content) -> {
 			String insertion = style.getInsertion();
 			if (insertion != null) {
 				try {
